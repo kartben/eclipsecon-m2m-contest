@@ -1,0 +1,57 @@
+<html>
+  <head>
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script type="text/javascript">
+      google.load("visualization", "1", {packages:["corechart", "annotatedtimeline"]});
+      google.load("jquery", "1");
+
+	function OnLoad(){
+	  var url = "http://m2mcontest.localhost/REST/sensors/consolidatedData_OneMinute/";
+	  $.getJSON(url, function (data) {
+	    if (data.rows &&
+	        data.rows.length > 0) {
+	      var rows = data.rows;
+	      var content = document.getElementById('content');
+	      content.innerHTML = '';
+
+
+
+	        var data = new google.visualization.DataTable();
+	        data.addColumn('datetime', 'Time');
+	        data.addColumn('number', 'TEMP1');
+	        data.addColumn('number', 'LIGHT1');
+	        data.addRows(rows.length / 2);
+
+	      for (var i=0; i < rows.length / 2; i++) {
+	        data.setValue(i, 0, new Date(rows[i]._id.ts["$date"]));
+	        data.setValue(i, 1, rows[i].value.minimum);
+		}
+
+	      for (var i = rows.length / 2; i < rows.length ; i++) {
+	        data.setValue(i - (rows.length / 2), 0, new Date(rows[i]._id.ts["$date"]));
+	        data.setValue(i - (rows.length / 2), 2, rows[i].value.minimum);
+	      }
+
+          var chart = new google.visualization.LineChart(document.getElementById('chart_div'));
+          chart.draw(data, {width: 900, height: 500, title: 'Arduino sensors'});
+		//var chart = new google.visualization.AnnotatedTimeLine(document.getElementById('chart_div'));
+	       // chart.draw(data, {displayAnnotations: true});
+
+
+	    }
+	  });
+	}
+
+	google.setOnLoadCallback(OnLoad);
+
+
+
+
+    </script>
+  </head>
+
+  <body>
+    <div id='chart_div' style='width: 900px; height: 500px;'></div>
+    <div id="content"></div>
+  </body>
+</html>
