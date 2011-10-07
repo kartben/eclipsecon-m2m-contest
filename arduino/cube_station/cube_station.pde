@@ -12,6 +12,7 @@
 #define MICROPHONE_SENSOR_PIN 0
 #define HUMIDITY_SENSOR_PIN 1
 #define TEMPERATURE_SENSOR_PIN 2
+#define PHOTORESISTOR_SENSOR_PIN 3
 
 #define SPEAKER_PIN 8
 
@@ -69,19 +70,24 @@ void loop(){
   } 
 
   delay(1000) ;
+  
+  float humidity = getHumidity(HUMIDITY_SENSOR_PIN) ;
+  float temperature = getTemperature(TEMPERATURE_SENSOR_PIN) ;
+  float soundLevel = getSoundLevel(MICROPHONE_SENSOR_PIN) ;
+  float illuminance = getSoundLevel(PHOTORESISTOR_SENSOR_PIN) ;
 
   /*
-  Serial3.println("HUM: " + String(dtostrf(getHumidity(HUMIDITY_SENSOR_PIN),2,2,s)) + "%") ;
+  Serial3.println("HUM: " + String(dtostrf(humidity,2,2,s)) + "%") ;
    delay(10);
    Serial3.print(254, BYTE) ;
    Serial3.print(1, BYTE) ;
    
-   Serial3.println("SOUND: " + String(getSoundLevel(MICROPHONE_SENSOR_PIN))) ;
+   Serial3.println("SOUND: " + String(soundLevel)) ;
    delay(10);
    Serial3.print(254, BYTE) ;
    Serial3.print(1, BYTE) ;
    
-   Serial3.println("TMP: " + String(dtostrf(getTemperature(TEMPERATURE_SENSOR_PIN),2,2,s)) + "C") ;
+   Serial3.println("TMP: " + String(dtostrf(temperature,2,2,s)) + "C") ;
    delay(10);
    Serial3.print(254, BYTE) ;
    Serial3.print(1, BYTE) ;
