@@ -85,6 +85,9 @@ void setup()
   Serial.println("***  Welcome to the Cube!  ***") ;
   Serial.println("******************************") ;
 
+  LCD_ClearScreen();
+  Serial3.print(" ...  BOOT  ... ") ; 
+
   // Setup GSM
   Serial.println() ;
   Serial.println() ;
@@ -98,6 +101,10 @@ void setup()
   setupRfid() ;
   // Setup data Ethernet stack
   Ethernet.begin(mac, ip);
+
+  Serial3.println("       OK") ; 
+  delay(100) ;
+  LCD_ClearScreen();
 }
 
 void loop(){
@@ -136,10 +143,24 @@ void loop(){
   float illuminance = getSoundLevel(PHOTORESISTOR_SENSOR_PIN) ;
   lastSensorValues[PHOTORESISTOR_SENSOR_PIN] = illuminance ;
 
-  Serial.println("HUM: " + String(dtostrf(humidity,2,2,s)) + "%") ;
-  Serial.println("SOUND: " + String(dtostrf(soundLevel,2,2,s))) ;
-  Serial.println("TMP: " + String(dtostrf(temperature,2,2,s)) + "C") ;
-  Serial.println("ILLUM: " + String(dtostrf(illuminance,2,2,s)) + " lux") ;
+  LCD_MoveCursor(0) ;
+  Serial3.print("                ") ;
+  LCD_MoveCursor(0) ;
+
+  switch(millis() / 1000 % 4) {
+  case 0:  
+    Serial3.print("Hum. " + String(dtostrf(humidity,2,2,s)) + "%") ; 
+    break;
+  case 1:  
+    Serial3.print("Noise. " + String(dtostrf(soundLevel,2,2,s))) ;
+    break;
+  case 2: 
+    Serial3.print("Temp. " + String(dtostrf(temperature,2,2,s)) + "C") ;
+    break; 
+  case 3: 
+    Serial3.print("Illum. " + String(dtostrf(illuminance,2,2,s)) + " lux") ; 
+    break;
+  }
 
 
   while (client.available() > 0) {
@@ -170,7 +191,7 @@ void loop(){
     Serial.println(json) ;
     sendData(json, "/sensors/data/_insert" );
   }
-  
+
   lastConnected = client.connected();
 
 }
@@ -199,6 +220,11 @@ void sendData(String thisData, String url) {
     Serial.println("KO");
   }
 }
+
+
+
+
+
 
 
 
