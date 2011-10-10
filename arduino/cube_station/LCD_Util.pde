@@ -9,4 +9,8 @@ void LCD_ClearScreen() {
   Serial3.print(0x01, BYTE) ;
 }
 
+void LCD_SetBacklight(byte level) {
+  Serial3.print(0x80, BYTE) ;
+  Serial3.print(level, BYTE) ;
+}
 

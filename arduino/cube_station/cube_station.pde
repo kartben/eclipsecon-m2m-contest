@@ -21,6 +21,10 @@
 #define TEMPERATURE_SENSOR_PIN 2
 #define PHOTORESISTOR_SENSOR_PIN 3
 
+#define MOTOR_A_PWM 3       // PWM control for motor outputs 1 and 2
+#define MOTOR_B_PWM 11      // PWM control for motor outputs 3 and 4
+#define MOTOR_A_DIR 12      // direction control for motor outputs 1 and 2
+#define MOTOR_B_DIR 13     // direction control for motor outputs 3 and 4
 String sensorNames[] = { 
   "NOISE", "HUMIDITY", "TEMPERATURE", "ILLUMINANCE" } 
 ;
@@ -32,6 +36,9 @@ float lastSensorValues[] = {
 
 char s[20];
 
+// variables for LCD display
+char LCD_secondLine[17] = "                " ;
+
 // Variables for RFID scanning
 
 char rfidSerial[20] = "" ;
@@ -39,11 +46,14 @@ char rfidSerial[20] = "" ;
 // ***************************
 
 // Variables for GSM
+boolean smsReceived = false;
+int smsDisplayIndex = -1 ;
 char smsBuffer[160];
+char smsMarqueeBuffer[250];
 char phoneNumber[20];
 
 long lastSmsCheckTime = 0;
-const int smsCheckInterval = 10000; 
+const int smsCheckInterval = 20000; 
 
 // ***************************
 
@@ -79,6 +89,7 @@ void setup()
 
   // Serial3 is used for LCD display
   Serial3.begin(9600);
+  LCD_SetBacklight(0xFF);
 
 
   Serial.println("******************************") ;
@@ -99,8 +110,20 @@ void setup()
 
   // Setup RFID
   setupRfid() ;
-  // Setup data Ethernet stack
+
+  // Setup ta Ethernet stack
   Ethernet.begin(mac, ip);
+
+  // Setup motors (fans)
+  pinMode(MOTOR_A_PWM, OUTPUT);
+  pinMode(MOTOR_B_PWM, OUTPUT);
+  pinMode(MOTOR_A_DIR, OUTPUT);
+  pinMode(MOTOR_B_DIR, OUTPUT);
+  digitalWrite(MOTOR_A_DIR, HIGH);
+  digitalWrite(MOTOR_B_DIR, HIGH);
+  analogWrite(MOTOR_A_PWM, 64);
+  analogWrite(MOTOR_B_PWM, 64);
+
 
   Serial3.println("       OK") ; 
   delay(100) ;
@@ -108,6 +131,17 @@ void setup()
 }
 
 void loop(){
+  while (client.available() > 0) {
+    char c = client.read();
+    Serial.print(c);
+  }
+
+  if (!client.connected() && lastConnected) {
+    Serial.println();
+    Serial.println("disconnecting client.");
+    client.stop();
+  }
+
   // Check if an RFID tag is present
   if ( read_serial(rfidSerial) > 0 ) {
     Serial.println(rfidSerial) ;
@@ -126,13 +160,65 @@ void loop(){
       Serial.print("Message: ");
       Serial.println(smsBuffer);
       Serial.println("---------\n\n");
+      memset(smsMarqueeBuffer, ' ', 250);
+      String s = "SMS from " + String(phoneNumber) + " --> " ;
+      s += smsBuffer;
+      s += "  ";
+      s.toCharArray(smsMarqueeBuffer, s.length()) ;
+      Serial.println(smsMarqueeBuffer) ;
+
+      smsDisplayIndex = 0;
+      smsReceived = true; 
+
+      // Blink LCD
+      for(int i = 0; i < 5 ; i++) {
+        LCD_SetBacklight(0) ; 
+        delay(120) ;
+        LCD_SetBacklight(0xFF) ; 
+        delay(120) ;
+      }
+
       playMelodySmsReceived(SPEAKER_PIN);
     } 
     Serial.println("done!") ;
     lastSmsCheckTime = millis();
   }
 
-  delay(100) ;
+  if(smsReceived)
+  {
+    // is it a command for the fans? (command example: "FAN1 40", to set Fan#1 to a 40% speed)
+    int motor, speed; 
+    int res = sscanf(smsBuffer, "FAN%d %d", &motor, &speed) ;
+    if(res == 2) {
+      // it is a command indeed!
+      int adjustedSpeed = map(speed, 0, 100, 0, 255) ;
+      Serial.println("Setting speed of motor #" + String(motor) + " to " + String(adjustedSpeed) + "(" + String(speed) +  "%)" ) ;
+      analogWrite((motor == 1) ? MOTOR_A_PWM : MOTOR_B_PWM , adjustedSpeed);
+
+      // store the received command in mongodb
+      String json = "docs=[" ;
+      json += "{\"command\":\"FAN" + String(motor) + " " + String(speed) +  "\",\"type\":\"SMS\", \"from\":\"" + phoneNumber + "\"}" ;
+      json += "]" ; 
+
+      Serial.println(json) ;
+      sendData(json, "/cmd/histo/_insert" );
+
+      // we don't want to display such an SMS
+      smsDisplayIndex = -1 ;
+    }
+
+    smsReceived = false ; // SMS has been processed
+  }
+
+  // display SMS if any
+  if(smsDisplayIndex >= 0 && smsDisplayIndex < 250) {
+    for(int i = 0 ; i < 15 ; i++)
+      LCD_secondLine[i] = LCD_secondLine[i+1] ;
+    LCD_secondLine[15] = smsMarqueeBuffer[smsDisplayIndex++] ;
+    LCD_MoveCursor(16);
+    Serial3.print(LCD_secondLine) ;
+  } 
+
 
   float humidity = getHumidity(HUMIDITY_SENSOR_PIN) ; 
   lastSensorValues[HUMIDITY_SENSOR_PIN] = humidity ;
@@ -143,11 +229,12 @@ void loop(){
   float illuminance = getSoundLevel(PHOTORESISTOR_SENSOR_PIN) ;
   lastSensorValues[PHOTORESISTOR_SENSOR_PIN] = illuminance ;
 
+
   LCD_MoveCursor(0) ;
   Serial3.print("                ") ;
   LCD_MoveCursor(0) ;
 
-  switch(millis() / 1000 % 4) {
+  switch(millis() / 5000 % 4) {
   case 0:  
     Serial3.print("Hum. " + String(dtostrf(humidity,2,2,s)) + "%") ; 
     break;
@@ -155,24 +242,13 @@ void loop(){
     Serial3.print("Noise. " + String(dtostrf(soundLevel,2,2,s))) ;
     break;
   case 2: 
-    Serial3.print("Temp. " + String(dtostrf(temperature,2,2,s)) + "C") ;
+    Serial3.print("Temp. " + String(dtostrf(temperature,2,2,s)) + (char)0xDF + "C") ;
     break; 
   case 3: 
     Serial3.print("Illum. " + String(dtostrf(illuminance,2,2,s)) + " lux") ; 
     break;
   }
 
-
-  while (client.available() > 0) {
-    char c = client.read();
-    Serial.print(c);
-  }
-
-  if (!client.connected() && lastConnected) {
-    Serial.println();
-    Serial.println("disconnecting client.");
-    client.stop();
-  }
 
   // if you're not connected, and at least "postingInterval" seconds have passed 
   // since your last connection, then connect again and send data:
@@ -193,6 +269,9 @@ void loop(){
   }
 
   lastConnected = client.connected();
+
+
+  delay(120);
 
 }
 
@@ -220,6 +299,20 @@ void sendData(String thisData, String url) {
     Serial.println("KO");
   }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
