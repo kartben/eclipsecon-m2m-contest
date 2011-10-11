@@ -17,18 +17,18 @@
  * along with XBee-Arduino.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <XBee.h>
-#include <NewSoftSerial.h>
+#include <XBee021.h>
 
 /*
 This example is for Series 2 XBee
  Sends a ZB TX request with the value of analogRead(pin5) and checks the status response for success
-*/
+ */
 
 // create the XBee object
 XBee xbee = XBee();
 
-uint8_t payload[] = { 0, 0 };
+uint8_t payload[] = { 
+  0x0, 0x0, 0x0, 0x0 };
 
 // SH + SL Address of receiving XBee (in our case: the coordinator)
 XBeeAddress64 addr64 = XBeeAddress64(0x0, 0x0);
@@ -39,10 +39,15 @@ void setupXbee() {
   xbee.begin(9600);
 }
 
-void sendValues(int temperature) {   
+void sendValues(int illuminance, int temperature) {   
   // break down 10-bit reading into two bytes and place in payload
-  payload[0] = temperature >> 8 & 0xff;
-  payload[1] = temperature & 0xff;
+  payload[0] = illuminance >> 8 & 0xff;
+  payload[1] = illuminance & 0xff;
+
+  payload[2] = temperature >> 8 & 0xff;
+  payload[3] = temperature & 0xff;
+
+
 
   xbee.send(zbTx);
 
@@ -51,21 +56,25 @@ void sendValues(int temperature) {
   if (xbee.readPacket(500)) {
     // got a response!
 
-    // should be a znet tx status            	
+    // should be a znet tx status                
     if (xbee.getResponse().getApiId() == ZB_TX_STATUS_RESPONSE) {
       xbee.getResponse().getZBTxStatusResponse(txStatus);
 
       // get the delivery status, the fifth byte
       if (txStatus.getDeliveryStatus() == SUCCESS) {
-      } else {
+      } 
+      else {
         // the remote XBee did not receive our packet. is it powered on?
       }
     }
-  } else if (xbee.getResponse().isError()) {
+  } 
+  else if (xbee.getResponse().isError()) {
     //nss.print("Error reading packet.  Error code: ");  
     //nss.println(xbee.getResponse().getErrorCode());
-  } else {
+  } 
+  else {
     // local XBee did not provide a timely TX Status Response -- should not happen
   }
 }
+
 

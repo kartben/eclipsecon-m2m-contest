@@ -1,7 +1,5 @@
 #include <avr/sleep.h>
-
-#include <XBee.h>
-#include <NewSoftSerial.h>
+#include <SoftwareSerial.h>
 
 /*
  * ----------------------------
@@ -33,9 +31,27 @@
  * 
  */
 
+#define TEMPERATURE_SENSOR_PIN 1
+#define ILLUMINANCE_SENSOR_PIN 0
+#define SOUND_SENSOR_PIN 2
+
+#define PHOTOCELL_RESISTOR 10.0
+
+
 int wakePin = 2;                 // pin used for waking up
 int sleepStatus = 0;             // variable to store a request for sleep
-int count = 0;                   // counter
+
+void flashLed(int pin, int times, int wait) {
+  for (int i = 0; i < times; i++) {
+    digitalWrite(pin, HIGH);
+    delay(wait);
+    digitalWrite(pin, LOW);
+
+    if (i + 1 < times) {
+      delay(wait);
+    }
+  }
+}
 
 void wakeUpNow()        // here the interrupt is handled after wakeup
 {
@@ -48,6 +64,8 @@ void wakeUpNow()        // here the interrupt is handled after wakeup
 void setup()
 {
   pinMode(wakePin, INPUT);
+  pinMode(13, OUTPUT);
+  digitalWrite(13, LOW);
 
   Serial.begin(9600);
 
@@ -72,6 +90,8 @@ void setup()
 
 void sleepNow()         // here we put the arduino to sleep
 {
+  flashLed(13, 2, 500) ;
+
   /* Now is the time to set the sleep mode. In the Atmega8 datasheet
    * http://www.atmel.com/dyn/resources/prod_documents/doc2486.pdf on page 35
    * there is a list of sleep modes which explains which clocks and 
@@ -127,12 +147,38 @@ void sleepNow()         // here we put the arduino to sleep
   detachInterrupt(0);      // disables interrupt 0 on pin 2 so the 
   // wakeUpNow code will not be executed 
   // during normal running time.
-
 }
 
 void loop()
 {
-    sleepNow();
+  sleepNow();
+
+  // we woke up
+  delay(100) ; 
+  flashLed(13, 5, 40) ;
+
+  delay(2000) ;
+
+  int sensorValue ;
+
+  // get illuminance
+  sensorValue = analogRead(ILLUMINANCE_SENSOR_PIN);    
+  float Vout0 = sensorValue * 0.0048828125;	                            // calculate the voltage
+  int lux = 500 / ( PHOTOCELL_RESISTOR * ( (5-Vout0) / Vout0 ) );
+
+  delay(10);
+
+  // get temperature
+  sensorValue = analogRead(TEMPERATURE_SENSOR_PIN);    
+  float K = (((sensorValue / 1023.) * 5.) * 100.);
+  float tempC = K-273.;
+
+  // find a way to get noise level smartly :)
+
+  sendValues(lux, (int)tempC * 100) ;
+
+  delay(100) ;
 }
+
 
 
