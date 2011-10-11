@@ -1,3 +1,25 @@
+/**
+*
+* Pin mapping:
+*
+*  - RX1: RFID-RX (to be wired to digital pin 7)
+*  - TX1: RFID-TX (to be wired to digital pin 8)
+*
+*  - RX2: GSM-TX
+*  - TX2: GSM-RX
+*
+*  - TX3: LCDDISPLQY-RX
+*
+*  - digital 50 -> digital 12 (SPI MOSI)
+*  - digital 51 -> digital 11 (SPI MISO)
+*  - digital 52 -> digital 13 (SPI SCK)
+*
+*  - digital 3 -> Ardumoto PWM-A
+*  - digital 4 -> Ardumoto PWM-B
+*  - digital 5 -> Ardumoto DIR-A
+*  - digital 6 -> Ardumoto DIR-B
+*/
+
 #include "humidity_HIH4030.h"
 #include "microphone_ADMP401.h"
 #include "temperature_LM35.h"
