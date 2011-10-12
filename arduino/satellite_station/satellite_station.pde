@@ -157,14 +157,14 @@ void loop()
   delay(100) ; 
   flashLed(13, 5, 40) ;
 
-  delay(2000) ;
+  delay(1500) ;
 
   int sensorValue ;
 
   // get illuminance
   sensorValue = analogRead(ILLUMINANCE_SENSOR_PIN);    
-  float Vout0 = sensorValue * 0.0048828125;	                            // calculate the voltage
-  int lux = 500 / ( PHOTOCELL_RESISTOR * ( (5-Vout0) / Vout0 ) );
+  float Vout0 = sensorValue * 0.003222656;	                            // calculate the voltage
+  int lux = 500 / ( PHOTOCELL_RESISTOR * ( (3.3-Vout0) / Vout0 ) );
 
   delay(10);
 
@@ -177,7 +177,7 @@ void loop()
 
   sendValues(lux, (int)tempC * 100) ;
 
-  delay(100) ;
+  delay(500) ;
 }
 
 
