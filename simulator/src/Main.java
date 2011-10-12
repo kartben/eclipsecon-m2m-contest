@@ -27,17 +27,17 @@ public class Main {
 
 	static {
 		simulatedSensors.put("CUBE_TEMPERATURE", new SimulationParameter(1900,
-				2600, 50));
+				2600, 10));
 		simulatedSensors.put("CUBE_ILLUMINANCE", new SimulationParameter(200,
 				15000, 50));
 
 		simulatedSensors.put("STATION1_TEMPERATURE", new SimulationParameter(
-				1900, 2600, 25));
+				1900, 2600, 10));
 		simulatedSensors.put("STATION1_ILLUMINANCE", new SimulationParameter(
 				200, 15000, 20));
 
 		simulatedSensors.put("STATION2_TEMPERATURE", new SimulationParameter(
-				1900, 2600, 25));
+				1900, 2600, 10));
 		simulatedSensors.put("STATION2_ILLUMINANCE", new SimulationParameter(
 				200, 15000, 80));
 	}
