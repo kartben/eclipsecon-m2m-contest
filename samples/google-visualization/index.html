@@ -9,7 +9,7 @@
 		google.load("jquery", "1");
 
 		function OnLoad() {
-			var url = 'http://91.121.117.128:27080/sensors/consolidatedData_OneMinute/_find?criteria=%7B"_id.sensorId"%3A"CUBE_TEMPERATURE"%7D&batch_size=60&callback=?';
+			var url = 'http://91.121.117.128:27080/sensors/consolidatedData_OneMinute/_find?sort=%7B"_id":-1%7D&criteria=%7B"_id.sensorId"%3A"CUBE_TEMPERATURE"%7D&batch_size=60&callback=?';
 			$.getJSON(url,
 				function(data) {
 					if (data.results &&
@@ -21,8 +21,8 @@
 							data.addRows(rows.length);
 
 							for (var i = 0; i < rows.length; i++) {
-								data.setValue(i, 0, new Date(rows[i]._id.ts["$date"]));
-								data.setValue(i, 1, rows[i].value.minimum);
+								data.setValue(rows.length - i - 1, 0, new Date(rows[i]._id.ts["$date"]));
+								data.setValue(rows.length - i - 1, 1, rows[i].value.minimum);
 							}
 
 							var chart = new google.visualization.LineChart(document.getElementById('chart_div'));
