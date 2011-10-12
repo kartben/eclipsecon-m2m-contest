@@ -30,8 +30,8 @@ XBee xbee = XBee();
 uint8_t payload[] = { 
   0x0, 0x0, 0x0, 0x0 };
 
-// SH + SL Address of receiving XBee (in our case: the coordinator)
-XBeeAddress64 addr64 = XBeeAddress64(0x0, 0x0);
+// SH + SL Address of receiving XBee (in our case: broadcast address)
+XBeeAddress64 addr64 = XBeeAddress64(0x0, 0xffff);
 ZBTxRequest zbTx = ZBTxRequest(addr64, payload, sizeof(payload));
 ZBTxStatusResponse txStatus = ZBTxStatusResponse();
 
