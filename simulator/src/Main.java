@@ -14,10 +14,13 @@ import java.util.Map.Entry;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import com.mongodb.BasicDBObject;
 import com.mongodb.DB;
 import com.mongodb.DBCollection;
+import com.mongodb.DBObject;
 import com.mongodb.MapReduceCommand;
 import com.mongodb.MapReduceCommand.OutputType;
+import com.mongodb.MapReduceOutput;
 import com.mongodb.Mongo;
 import com.mongodb.MongoException;
 
@@ -136,8 +139,14 @@ public class Main {
 				+ "    avg = Math.round(avg*100)/100;\r\n"
 				+ "    return {sensorId: res.sensorId, nbSamples: res.count, average: avg, minimum: res.min, maximum: res.max};\r\n"
 				+ "}";
+
+		// we consolidate only the data received on the last interval
+		long startingPoint = (System.currentTimeMillis() / interval) * interval;
+		DBObject query = new BasicDBObject();
+		query.put("$where", "this._id.getTimestamp() >" + startingPoint);
+
 		MapReduceCommand mrc = new MapReduceCommand(collection, map, reduce,
-				outputCollection, OutputType.REPLACE, null);
+				outputCollection, OutputType.MERGE, query);
 
 		mrc.setFinalize(finalize);
 
@@ -145,10 +154,9 @@ public class Main {
 		scope.put("INTERVAL", interval);
 		mrc.setScope(scope);
 
-		collection.mapReduce(mrc);
+		MapReduceOutput result = collection.mapReduce(mrc);
 
 		System.out.println("... data consolidation for " + outputCollection
-				+ "... done!");
-
+				+ "... done in " + result.getRaw().get("timeMillis") + "ms.");
 	}
 }
