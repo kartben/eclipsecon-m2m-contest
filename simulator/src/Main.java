@@ -116,24 +116,26 @@ public class Main {
 				+ "    var total = 0;\r\n"
 				+ "    var min = 0;\r\n"
 				+ "    var max = 0;\r\n"
+				+ "    var count = 0;\r\n"
 				+ "    for ( var i=0; i<values.length; i++ ) {\r\n"
-				+ "        var v = values[i].total;\r\n"
+				+ "        var v = values[i];\r\n"
 				+ "        if (i == 0) {\r\n"
-				+ "            min = v ;\r\n"
-				+ "            max = v ;\r\n"
+				+ "            min = v.min ;\r\n"
+				+ "            max = v.max ;\r\n"
 				+ "        }\r\n"
-				+ "        total += v;\r\n"
-				+ "        min = Math.min(v, min);\r\n"
-				+ "        max = Math.max(v, max);\r\n"
+				+ "        total += v.total;\r\n"
+				+ "        count += v.count;\r\n"
+				+ "        min = Math.min(v.min, min);\r\n"
+				+ "        max = Math.max(v,max, max);\r\n"
 				+ "    }\r\n"
-				+ "    return { sensorId: key.sensorId, total: total, min: min, max: max, count: values.length };\r\n"
+				+ "    return { sensorId: key.sensorId, total: total, min: min, max: max, count: count };\r\n"
 				+ "};";
 
 		String finalize = "function ( who , res ){\r\n"
-				+ "    avg = res.total / res.count;\r\n"
+				+ "    var avg = res.total / res.count;\r\n"
+				+ "    avg = Math.round(avg*100)/100;\r\n"
 				+ "    return {sensorId: res.sensorId, nbSamples: res.count, average: avg, minimum: res.min, maximum: res.max};\r\n"
 				+ "}";
-
 		MapReduceCommand mrc = new MapReduceCommand(collection, map, reduce,
 				outputCollection, OutputType.REPLACE, null);
 
