@@ -170,12 +170,12 @@ void loop()
 
   // get temperature
   sensorValue = analogRead(TEMPERATURE_SENSOR_PIN);    
-  float K = (((sensorValue / 1023.) * 5.) * 100.);
+  float K = (((sensorValue / 1023.) * 3.3) * 100.);
   float tempC = K-273.;
 
   // find a way to get noise level smartly :)
 
-  sendValues(lux, (int)tempC * 100) ;
+  sendValues(lux, (int) (tempC * 100.)) ;
 
   delay(500) ;
 }
