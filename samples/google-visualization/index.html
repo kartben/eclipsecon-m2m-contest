@@ -4,37 +4,57 @@
 		<script type="text/javascript" src="https://www.google.com/jsapi"></script>
 		<script type="text/javascript">
 		google.load("visualization", "1", {
-			packages: ["corechart", "annotatedtimeline"]
+			packages: ["corechart"]
 		});
 		google.load("jquery", "1");
+		
+		var baseURL = 'http://benjamin-cabe.com:8080/rest_api/sensors/consolidatedData_OneMinute' ;
 
-		function OnLoad() {
-			var url = 'http://91.121.117.128:27080/sensors/consolidatedData_OneMinute/_find?sort=%7B"_id":-1%7D&criteria=%7B"_id.sensorId"%3A"CUBE_TEMPERATURE"%7D&batch_size=60&callback=?';
-			$.getJSON(url,
-				function(data) {
-					if (data.results &&
-						data.results.length > 0) {
-							var rows = data.results;
-							var data = new google.visualization.DataTable();
-							data.addColumn('datetime', 'Time');
-							data.addColumn('number', 'Cube temperature');
-							data.addRows(rows.length);
+		function updateChart() {
 
-							for (var i = 0; i < rows.length; i++) {
-								data.setValue(rows.length - i - 1, 0, new Date(rows[i]._id.ts["$date"]));
-								data.setValue(rows.length - i - 1, 1, rows[i].value.minimum);
+			    function fillDataTableWithResults(column) {
+					return function(data) {
+						if (data != null && data.results &&
+							data.results.length > 0) {
+								var rows = data.results;
+								for (var i = 0; i < rows.length; i++) {
+									dataTable.setValue(rows.length - i - 1, 0, new Date(rows[i]._id.ts["$date"]));
+									dataTable.setValue(rows.length - i - 1, column, rows[i].value.minimum);
+								}
 							}
-
-							var chart = new google.visualization.LineChart(document.getElementById('chart_div'));
-							chart.draw(data, {
-								width: 900,
+							chart.draw(dataTable, {
+								width: 700,
 								height: 500,
 								title: 'Arduino sensors'
 							});
-						}
-					});
-				}
-				google.setOnLoadCallback(OnLoad);
+					};
+			    }
+	
+				var dataTable = new google.visualization.DataTable();
+				dataTable.addColumn('datetime', 'Time');
+				dataTable.addColumn('number', 'Cube temperature');
+				dataTable.addColumn('number', 'Station #1 temperature');
+				dataTable.addColumn('number', 'Station #2 temperature');
+				dataTable.addRows(60);
+				var chart = new google.visualization.LineChart(document.getElementById('chart_div'));
+
+	
+	
+				var queryArgs = '?sort=%7B"_id":-1%7D&criteria=%7B"_id.sensorId"%3A"CUBE_TEMPERATURE"%7D&batch_size=60&callback=?' ;
+				var url = baseURL + queryArgs ;
+				$.getJSON(url, fillDataTableWithResults(1)) ;
+
+				var queryArgs = '?sort=%7B"_id":-1%7D&criteria=%7B"_id.sensorId"%3A"STATION1_TEMPERATURE"%7D&batch_size=60&callback=?' ;
+				var url = baseURL + queryArgs ;
+				$.getJSON(url, fillDataTableWithResults(2)) ;
+
+				var queryArgs = '?sort=%7B"_id":-1%7D&criteria=%7B"_id.sensorId"%3A"STATION2_TEMPERATURE"%7D&batch_size=60&callback=?' ;
+				var url = baseURL + queryArgs ;
+				$.getJSON(url, fillDataTableWithResults(3)) ;
+
+		}
+		google.setOnLoadCallback(updateChart);
+		setInterval(updateChart, 10000);
 		</script>
 		<title></title>
 	</head>
