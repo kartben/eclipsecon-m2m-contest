@@ -1,0 +1,94 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN"
+"http://www.w3.org/TR/html4/strict.dtd">
+<html>
+	<head>
+		<link rel="stylesheet" href="normalize.css" type="text/css">
+		<link rel="stylesheet" href="stylesheet.css" type="text/css">
+		<title>
+			EclipseCon M2M contest
+		</title>
+	</head>
+	<body>
+		<div id="header">
+			Machine-to-Machine Programming Contest
+		</div>
+		<p>
+			The Forum has been wired!
+		</p>
+		<p>
+			We have spread sensors and various sorts of devices (including an actual robot made of Lego Mindstorms NXT) all over the Forum, and invite you to unleash your creativity by designing an application that will use all the data. Mobile app, augmented reality, social interactivity... the only limit is your imagination.
+		</p>
+		<p>
+			The winner will get an <strong>Apple iPad 2</strong>!
+		</p>
+		<p>
+			If you don't feel like writing a whole application and would like to be part of the contest, just fill in a ticket and join our daily draw to try to win cool swag!
+		</p>
+		<h1>
+			General description
+		</h1>
+		<h1>
+			Programming contest
+		</h1>
+		<h2>
+			Rules
+		</h2>
+		<div id="fightclub">
+			<p>
+				<strong><u>Rule #1</u></strong><br>
+				You do speak about the M2M contest with everyone at the conference.
+			</p>
+			<p>
+				<strong><u>Rule #2</u></strong><br>
+				You <strong>DO</strong> speak about the M2M contest with everyone at the conference!
+			</p>
+		</div>
+		<h2>
+			API
+		</h2>
+		<p>
+			A <a href="http://www.mongodb.org/" target="_blank">MongoDB</a> database stores the data history for all the sensors, and you can access it using a very simple REST API.
+		</p>
+		<p>
+			The URL to which you should make GET requests is: <code>http://m2mcontest.eclipsecon.org/rest_api/&lt;<strong>databaseName</strong>&gt;/&lt;<strong>collectionName</strong>&gt;?<strong>query_params</strong></code>
+		</p>
+		<h3>
+			Allowed query parameters
+		</h3>
+		<ul>
+			<li>
+				<p>
+					<code>criteria=<em>search_criteria</em></code><br>
+					<em>search_criteria</em> is a JSON representation of the search filter.
+				</p>If you just want to filter results for which a given key equals a given value, use the following syntax: <code>{"sensor": "CUBE_TEMPERATURE"}</code><br>
+				If you want to filter results for which a given key is greater than a given value, use the following syntax: <code>{"value": {"$gt": 500}}</code><br>
+			</li>
+			<li>
+				<p>
+					<code>sort=<em>sort_fields</em></code><br>
+					<em>sort_fields</em> is a JSON representation of the field you wants to sort the result by, with the associated order.
+				</p><code>{"sensor":1,"value":-1}</code> would sort the result by ascending 'sensor' key, and descending 'value' key.
+			</li>
+			<li>
+				<p>
+					<code>batch_size=<em>n</em></code><br>
+					<em>n</em> is the maximum number of results you want to get.
+				</p>
+			</li>
+		</ul>
+		<h3>
+			<code><strong>sensors</strong></code> database
+		</h3>
+		<ul>
+			<li><p><code>data</code> collection contains the raw data. That means there are tons of data in this collection, but it can be useful if you want to access the last instant value of a given variable.</p>
+				<p>Returned values have the following format:</p>
+			</li>
+		</ul>
+		<h2>
+			Application example
+		</h2>
+		<h2>
+			Jury
+		</h2>
+	</body>
+</html>
