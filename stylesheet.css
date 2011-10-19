@@ -67,3 +67,9 @@ li p {
 	margin-right:auto;
 	padding-top:220px;
 }
+
+#temperature-chart {
+	border: 0px;
+	width:450px;
+	height: 300px;
+}
