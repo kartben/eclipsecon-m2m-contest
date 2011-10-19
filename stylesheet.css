@@ -33,6 +33,10 @@ h2 {
 	background: #ffeaf1;
 }
 
+h3 {
+	border-bottom: 1px solid black;
+}
+
 li {
 	margin-bottom: 1em;
 } 

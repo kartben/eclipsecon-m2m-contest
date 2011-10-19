@@ -4,6 +4,13 @@
 	<head>
 		<link rel="stylesheet" href="normalize.css" type="text/css">
 		<link rel="stylesheet" href="stylesheet.css" type="text/css">
+		<script src="http://yandex.st/highlightjs/6.1/highlight.min.js" type="text/javascript">
+</script>
+		<link rel="stylesheet" href="http://yandex.st/highlightjs/6.1/styles/default.min.css" type="text/css">
+		<link rel="stylesheet" href="http://yandex.st/highlightjs/6.1/styles/github.css" type="text/css">
+		<script type="text/javascript">
+hljs.initHighlightingOnLoad();
+		</script>
 		<title>
 			EclipseCon M2M contest
 		</title>
@@ -80,8 +87,85 @@
 			<code><strong>sensors</strong></code> database
 		</h3>
 		<ul>
-			<li><p><code>data</code> collection contains the raw data. That means there are tons of data in this collection, but it can be useful if you want to access the last instant value of a given variable.</p>
-				<p>Returned values have the following format:</p>
+			<li>
+				<p>
+					<code><strong>data</strong></code> collection contains the raw data. That means there are tons of data in this collection, but it can be useful if you want to access the last instant value of a given variable.
+				</p>
+				<p>
+					Returned values have the following format:
+				</p>
+				<pre>
+<code>
+{
+  "id":0,
+  "ok":1,
+  "results":[
+    {
+      "_id":{
+        "$oid":"4e98b520e4b0331bc63552f8"
+      },
+      "sensor":"CUBE_ILLUMINANCE",
+      "value":250
+    },
+    {
+      "_id":{
+        "$oid":"4e98b520e4b0331bc63552f9"
+      },
+      "sensor":"CUBE_TEMPERATURE",
+      "value":19.010000000000002
+    }
+  ]
+}
+</code>
+</pre>
+			</li>
+			<li>
+				<p>
+					<code><strong>consolidatedData_OneMinute</strong></code>, <code><strong>consolidatedData_FiveMinute</strong></code> and <code><strong>consolidatedData_OneHour</strong></code> collections contain the results of a map/reduce job applied to raw data, and allow you to access min/max/averages sensors values on given periods of time.
+				</p>
+				<p>
+					Returned values have the following format:
+				</p>
+				<pre>
+<code>
+{
+  "id":7,
+  "ok":1,
+  "results":[
+    {
+      "_id":{
+        "sensorId":"CUBE_ILLUMINANCE",
+        "ts":{
+          "$date":1318630680000
+        }
+      },
+      "value":{
+        "average":275.0,
+        "maximum":300.0,
+        "minimum":250.0,
+        "nbSamples":2.0,
+        "sensorId":"CUBE_ILLUMINANCE"
+      }
+    },
+    {
+      "_id":{
+        "sensorId":"CUBE_TEMPERATURE",
+        "ts":{
+          "$date":1318630680000
+        }
+      },
+      "value":{
+        "average":19.02,
+        "maximum":19.02,
+        "minimum":19.010000000000002,
+        "nbSamples":2.0,
+        "sensorId":"CUBE_TEMPERATURE"
+      }
+    }
+  ]
+}
+</code>
+</pre>
 			</li>
 		</ul>
 		<h2>
