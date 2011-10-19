@@ -22,19 +22,23 @@
 									dataTable.setValue(rows.length - i - 1, column, rows[i].value.minimum);
 								}
 							}
+							
+							var formatter = new google.visualization.DateFormat({pattern: 'HH:mm'});
+							formatter.format(dataTable, 0);
+														
 							chart.draw(dataTable, {
-								width: 700,
-								height: 500,
-								title: 'Cube sensors'
+								width: 450,
+								height: 300,
+								title: 'Sensors'
 							});
 					};
 			    }
 	
 				var dataTable = new google.visualization.DataTable();
 				dataTable.addColumn('datetime', 'Time');
-				dataTable.addColumn('number', 'Cube temperature');
-				dataTable.addColumn('number', 'Station #1 temperature');
-				dataTable.addColumn('number', 'Station #2 temperature');
+				dataTable.addColumn('number', 'Cube temp.');
+				dataTable.addColumn('number', 'Station #1 temp.');
+				dataTable.addColumn('number', 'Station #2 temp.');
 				dataTable.addRows(60);
 				var chart = new google.visualization.LineChart(document.getElementById('chart_div'));
 
@@ -59,7 +63,7 @@
 		<title></title>
 	</head>
 	<body>
-		<div id='chart_div' style='width: 900px; height: 500px;'></div>
+		<div id='chart_div' style='width: 500px; height: 200px;'></div>
 		<div id="content"></div>
 	</body>
 </html>
