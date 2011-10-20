@@ -17,11 +17,11 @@ p {
 
 h1 {
 	font-size:26pt;
-	padding-left:0.5em;
+	padding-left:2.0em;
 	padding-top:0.3em;;
 	padding-bottom:0.3em;;
 	color: #ef4323;
-	background: #252223;
+	background: #252223 url('m2m-bullet.png') no-repeat 15px 10px;
 	-webkit-text-stroke: 0.5pt #fff;
 	-webkit-text-fill-color: #ef4323
 }
