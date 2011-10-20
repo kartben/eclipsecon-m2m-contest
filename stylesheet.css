@@ -37,12 +37,21 @@ h3 {
 	border-bottom: 1px solid black;
 }
 
+ul {
+	margin-left: 1.5em;
+	margin-right: 2em;
+}
+
 li {
-	margin-bottom: 1em;
+	margin-bottom: 0.5em;
 } 
 
 li p {
 	margin-left: 0em;
+}
+
+ul li ul li {
+	margin-bottom:0.2em;
 }
 
 #header {
@@ -55,6 +64,12 @@ li p {
 	font-size:2em;
 	color: white;
 	text-shadow: 1px 1px 10px #ef4323;
+}
+
+#toc {
+	width:350px;
+	margin-left:30px;
+	border: 1px dotted black;
 }
 
 #fightclub {

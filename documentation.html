@@ -2,6 +2,7 @@
 "http://www.w3.org/TR/html4/strict.dtd">
 <html>
 	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 		<link rel="stylesheet" href="normalize.css" type="text/css">
 		<link rel="stylesheet" href="stylesheet.css" type="text/css">
 		<script src="http://yandex.st/highlightjs/6.1/highlight.min.js" type="text/javascript">
@@ -23,7 +24,7 @@ hljs.initHighlightingOnLoad();
 			The Forum has been wired!
 		</p>
 		<p>
-			We have spread sensors and various sorts of devices (including an actual robot made of Lego Mindstorms NXT) all over the Forum, and invite you to unleash your creativity by designing an application that will use all the data. Mobile app, augmented reality, social interactivity... the only limit is your imagination.
+			We have spread sensors and various sorts of devices (including an actual robot made of Lego Mindstorms NXT) all over the Forum, and invite you to unleash your creativity by designing an application that will use all the data. Mobile app, augmented reality, social interactivity… the only limit is your imagination.
 		</p>
 		<p>
 			The winner will get an <strong>Apple iPad 2</strong>!
@@ -31,14 +32,44 @@ hljs.initHighlightingOnLoad();
 		<p>
 			If you don't feel like writing a whole application and would like to be part of the contest, just fill in a ticket and join our daily draw to try to win cool swag!
 		</p>
-		<h1>
+		<div id="toc">
+			<ul>
+				<li>
+					<a href="#general-description">General description</a>
+				</li>
+				<li>
+					<a href="#programming-contest">Programming contest</a>
+					<ul>
+						<li>
+							<a href="#judging-criteria">Judging criteria</a>
+						</li>
+						<li>
+							<a href="#how-to-participate">How to participate?</a>
+						</li>
+						<li>
+							<a href="#api">API</a>
+						</li>
+						<li>
+							<a href="#application-example">Application example</a>
+						</li>
+						<li>
+							<a href="#jury">The jury</a>
+						</li>
+					</ul>
+				</li>
+			</ul>
+		</div>
+		<h1 id="general-description">
 			General description
 		</h1>
-		<h1>
+		<p>
+			TODO
+		</p>
+		<h1 id="programming-contest">
 			Programming contest
 		</h1>
-		<h2>
-			Rules
+		<h2 id="judging-criteria">
+			Judging criteria
 		</h2>
 		<div id="fightclub">
 			<p>
@@ -50,7 +81,46 @@ hljs.initHighlightingOnLoad();
 				You <strong>DO</strong> speak about the M2M contest with everyone at the conference!
 			</p>
 		</div>
-		<h2>
+		<p>
+			The Best Application will be selected by a panel of judges. The judges will be evaluating the applications based on the following criteria:
+		</p>
+		<ul>
+			<li>
+				<strong>Innovation</strong>: There is a lot of data available, and the jury wants you to come up with the most creative ways to use it. You can for example try to use the QR codes available on the cube and the remote stations to build augmented reality applications!
+			</li>
+			<li>
+				<strong>Use of Eclipse Technologies</strong>: The jury would like to see you use Eclipse technologies as much as possible. How about using BIRT to create cool charts? Or Nebula widgets? What if you were to write a plug-in opening a Mylyn notification in your Eclipse workbench whenever something abnormal happens?
+			</li>
+			<li>
+				<strong>Interactivity</strong>: Every participant able to add interactivity will definitelty get bonus points. Remember that you can send SMSes to control the cube, that Twitter might be a good way to share the data with a broader audience, …
+			</li>
+		</ul>
+		<h2 id="how-to-participate">
+			How to participate?
+		</h2>
+		<h3>
+			Enter the contest
+		</h3>
+		<ol>
+			<li>Describe the killer features you have implemented in your application in less than 300 words,
+			</li>
+			<li>Take 1 to 3 screenshots showing your application in action, or make a short video or screencast (1-2 minutes),
+			</li>
+			<li>Send the description and screenshots of your new client to m2mcontest-ece@eclipse.org by Friday, Nov 4<sup>th</sup>, 2011 at 11:30am CEST.
+			</li>
+		</ol>
+		<h3>
+			Judging process
+		</h3>
+		<ol>
+			<li>The judges will select a short list of finalists and invite them to demo their applications.
+			</li>
+			<li>Demos will take place on Nov 4<sup>th</sup>, 2011 from 12:30pm - 1:30pm CEST.
+			</li>
+			<li>Winners will be announced at the EclipseCon Europe closing session.
+			</li>
+		</ol>
+		<h2 id="api">
 			API
 		</h2>
 		<p>
@@ -168,16 +238,34 @@ hljs.initHighlightingOnLoad();
 </pre>
 			</li>
 		</ul>
-		<h2>
+		<h2 id="application-example">
 			Application example
 		</h2>
 		<p>
 			We have put a very simple application example on github to help you getting familiar with the API and the manipulation of consolidated data.<br>
 			You can grab the source code at: <a href="https://github.com/kartben/eclipsecon-m2m-contest/tree/master/samples/" target="_blank">https://github.com/kartben/eclipsecon-m2m-contest/tree/master/samples/</a>
 		</p>
+		<p>
 			<iframe id="temperature-chart" src="index.html" scrolling="no"></iframe>
-		<h2>
+		</p>
+		<h2 id="jury">
 			Jury
 		</h2>
+		<p>
+			The winner of the programming contest will be elected by a panel of Eclipse community members and M2M experts on Friday, 4<sup>th</sup>.
+		</p>
+		<p>
+			Members of the jury are:
+		</p>
+		<ul>
+			<li>Wayne Beaton, <a href="http://www.eclipse.org/org/" title="About the Eclipse Foundation" target="_blank">Eclipse Foundation</a>,
+			</li>
+			<li>Benjamin Cabé, <a href="http://www.sierrawireless.com/" title="Sierra Wireless - Wireless mobile computing and M2M" target="_blank">Sierra Wireless</a>, contest co-organizer,
+			</li>
+			<li>Joscha Häring, <a href="https://evolvis.org/plugins/mediawiki/wiki/freedroidz/index.php/Hauptseite" title="freedroidz" target="_blank">freedroidz</a>, contest co-organizer,
+			</li>
+			<li>Kai Kreuzer, <a href="http://code.google.com/p/openhab/" title="openHAB" target="_blank">openHAB</a>.
+			</li>
+		</ul>
 	</body>
 </html>
