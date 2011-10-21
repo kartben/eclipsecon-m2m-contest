@@ -152,7 +152,8 @@ hljs.initHighlightingOnLoad();
 					<code>criteria=<em>search_criteria</em></code><br>
 					<em>search_criteria</em> is a JSON representation of the search filter.
 				</p>If you just want to filter results for which a given key equals a given value, use the following syntax: <code>{"sensor": "CUBE_TEMPERATURE"}</code><br>
-				If you want to filter results for which a given key is greater than a given value, use the following syntax: <code>{"value": {"$gt": 500}}</code><br>
+				If you want to filter results for which a given key is greater than a given value, use the following syntax: <code>{"value": {"$gt": 500}}</code>. Other comparators are of course available: <code>$lt</code>, <code>$lte</code>, <code>$gte</code>, <code>$ne</code>.<br>
+				More information about the MongoDB query capabilities can be found in <a href="http://www.10gen.com/static/downloads/mongodb_qrc_queries.pdf" title="MongoDB queries" target="_blank">this document</a>.
 			</li>
 			<li>
 				<p>
@@ -291,7 +292,7 @@ hljs.initHighlightingOnLoad();
 			Application example
 		</h2>
 		<p>
-			We have put a very simple application example on github to help you getting familiar with the API and the manipulation of consolidated data.<br>
+			We have put a very simple Javascript application on github to help you getting familiar with the API and the manipulation of consolidated data.<br>
 			You can grab the source code at: <a href="https://github.com/kartben/eclipsecon-m2m-contest/tree/master/samples/" target="_blank">https://github.com/kartben/eclipsecon-m2m-contest/tree/master/samples/</a>
 		</p>
 		<p>
