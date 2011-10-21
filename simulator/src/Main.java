@@ -29,18 +29,18 @@ public class Main {
 	private final static Map<String, SimulationParameter> simulatedSensors = new HashMap<String, SimulationParameter>();
 
 	static {
-		simulatedSensors.put("CUBE_TEMPERATURE", new SimulationParameter(1900,
-				2600, 1));
+		simulatedSensors.put("CUBE_TEMPERATURE", new SimulationParameter(2030,
+				2600, 3));
 		simulatedSensors.put("CUBE_ILLUMINANCE", new SimulationParameter(200,
 				15000, 50));
 
 		simulatedSensors.put("STATION1_TEMPERATURE", new SimulationParameter(
-				1900, 2600, 1));
+				1900, 2650, 1));
 		simulatedSensors.put("STATION1_ILLUMINANCE", new SimulationParameter(
 				200, 15000, 20));
 
 		simulatedSensors.put("STATION2_TEMPERATURE", new SimulationParameter(
-				1900, 2600, 1));
+				1980, 2450, 2));
 		simulatedSensors.put("STATION2_ILLUMINANCE", new SimulationParameter(
 				200, 15000, 80));
 	}

@@ -33,9 +33,9 @@ public class SimulationParameter {
 	public int updateValue() {
 		Random r = new Random();
 		int random = r.nextInt(100);
-		// in 85% of the cases, we follow the "direction" direction to
+		// in 75% of the cases, we follow the "direction" direction to
 		// increment/decrement current value
-		if (random <= 85) {
+		if (random <= 75) {
 			currentValue += inc * ascending;
 		} else {
 			currentValue -= inc * ascending;
