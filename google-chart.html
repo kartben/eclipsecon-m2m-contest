@@ -1,0 +1,69 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
+<html>
+	<head>
+		<script type="text/javascript" src="https://www.google.com/jsapi"></script>
+		<script type="text/javascript">
+		google.load("visualization", "1", {
+			packages: ["corechart"]
+		});
+		google.load("jquery", "1");
+		
+		var baseURL = 'http://m2mcontest.eclipsecon.org/rest_api/sensors/consolidatedData_OneMinute' ;
+
+		function updateChart() {
+
+			    function fillDataTableWithResults(column) {
+					return function(data) {
+						if (data != null && data.results &&
+							data.results.length > 0) {
+								var rows = data.results;
+								for (var i = 0; i < rows.length; i++) {
+									dataTable.setValue(rows.length - i - 1, 0, new Date(rows[i]._id.ts["$date"]));
+									dataTable.setValue(rows.length - i - 1, column, rows[i].value.minimum);
+								}
+							}
+							
+							var formatter = new google.visualization.DateFormat({pattern: 'HH:mm'});
+							formatter.format(dataTable, 0);
+														
+							chart.draw(dataTable, {
+								width: 450,
+								height: 300,
+								title: 'Sensors'
+							});
+					};
+			    }
+	
+				var dataTable = new google.visualization.DataTable();
+				dataTable.addColumn('datetime', 'Time');
+				dataTable.addColumn('number', 'Cube temp.');
+				dataTable.addColumn('number', 'Station #1 temp.');
+				dataTable.addColumn('number', 'Station #2 temp.');
+				dataTable.addRows(60);
+				var chart = new google.visualization.LineChart(document.getElementById('chart_div'));
+
+	
+	
+				var queryArgs = '?sort=%7B"_id":-1%7D&criteria=%7B"_id.sensorId"%3A"CUBE_TEMPERATURE"%7D&batch_size=60&callback=?' ;
+				var url = baseURL + queryArgs ;
+				$.getJSON(url, fillDataTableWithResults(1)) ;
+
+				var queryArgs = '?sort=%7B"_id":-1%7D&criteria=%7B"_id.sensorId"%3A"STATION1_TEMPERATURE"%7D&batch_size=60&callback=?' ;
+				var url = baseURL + queryArgs ;
+				$.getJSON(url, fillDataTableWithResults(2)) ;
+
+				var queryArgs = '?sort=%7B"_id":-1%7D&criteria=%7B"_id.sensorId"%3A"STATION2_TEMPERATURE"%7D&batch_size=60&callback=?' ;
+				var url = baseURL + queryArgs ;
+				$.getJSON(url, fillDataTableWithResults(3)) ;
+
+		}
+		google.setOnLoadCallback(updateChart);
+		setInterval(updateChart, 10000);
+		</script>
+		<title></title>
+	</head>
+	<body>
+		<div id='chart_div' style='width: 500px; height: 200px;'></div>
+		<div id="content"></div>
+	</body>
+</html>
