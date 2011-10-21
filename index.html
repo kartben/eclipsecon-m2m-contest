@@ -20,18 +20,6 @@ hljs.initHighlightingOnLoad();
 		<div id="header">
 			<div id="eclipsecon-logo"></div>Machine-to-Machine Programming Contest
 		</div>
-		<p>
-			The Forum has been wired!
-		</p>
-		<p>
-			We have spread sensors and various sorts of devices (including an actual robot made of Lego Mindstorms NXT) all over the Forum, and invite you to unleash your creativity by designing an application that will use all the data. Mobile app, augmented reality, social interactivity… the only limit is your imagination.
-		</p>
-		<p>
-			The winner will get an <strong>Apple iPad 2</strong>!
-		</p>
-		<p>
-			If you don't feel like writing a whole application and would like to be part of the contest, just fill in a ticket and join our daily draw to try to win cool swag!
-		</p>
 		<div id="toc">
 			<ul>
 				<li>
@@ -66,14 +54,31 @@ hljs.initHighlightingOnLoad();
 			General description
 		</h1>
 		<p>
-			TODO
+			The Forum has been wired!
+		</p>
+		<p>
+			We have spread sensors and various sorts of devices (including an actual robot made of Lego Mindstorms NXT) all over the Forum, and invite you to unleash your creativity by designing an application that will use all the data. Mobile app, augmented reality, social interactivity… the only limit is your imagination.
+		</p>
+		<p>
+			The winner will get an <strong>Apple iPad 2</strong>!
+		</p>
+		<p>
+			If you don't feel like writing a whole application and would like to be part of the contest, just fill in a ticket and join our daily draw to try to win cool swag!
 		</p>
 		<h1 id="daily-draw">
 			Daily draw
 		</h1>
 		<p>
-			TODO
+			Come by the Sierra Wireless booth, answer the few questions about the sensors and M2M in general, and try to win cool swag brought to you by Sierra and the Eclipse Foundation! We will draw one lucky winner at the end of day 1 and day 2 of the conference. Deadlines to submit your ticket:
 		</p>
+		<ul>
+			<li>Wednesday, 2<sup>nd</sup>: 5.30pm CEST
+			</li>
+		</ul>
+		<ul>
+			<li>Thursday, 3<sup>rd</sup>: 5.30pm CEST
+			</li>
+		</ul>
 		<h1 id="programming-contest">
 			Programming contest
 		</h1>
@@ -115,7 +120,7 @@ hljs.initHighlightingOnLoad();
 			</li>
 			<li>Take 1 to 3 screenshots showing your application in action, or make a short video or screencast (1-2 minutes),
 			</li>
-			<li>Send the description and screenshots of your new client to m2mcontest-ece@eclipse.org by Friday, Nov 4<sup>th</sup>, 2011 at 11:30am CEST.
+			<li>Send the description and screenshots of your new client to <a href="mailto:m2mcontest-ece@eclipse.org">m2mcontest-ece@eclipse.org</a> by Friday, Nov 4<sup>th</sup>, 2011 at 11:30am CEST.
 			</li>
 		</ol>
 		<h3>
@@ -196,6 +201,41 @@ hljs.initHighlightingOnLoad();
   ]
 }
 </code>
+</pre>
+			</li>
+			<li>
+				<p>
+					<code><strong>info</strong></code> collection contains metadata related to the sensors. You should use it to discover the available sensors, and grab their description.
+				</p>
+				<p>
+					Returned values have the following format:
+				</p>
+				<pre>
+            <code>
+{
+  "ok":1,
+  "results":[
+    {
+      "_id":{
+        "$oid":"4ea13ed7da0693209c524a25"
+      },
+      "sensor":"CUBE_TEMPERATURE",
+      "description":"Temperature at the cube",
+      "unit":"\u00b0C"
+    },
+    {
+      "_id":{
+        "$oid":"4ea13ed7da0693209c524a26"
+      },
+      "sensor":"CUBE_ILLUMINANCE",
+      "description":"Ambient light level at the cube",
+      "unit":"lux"
+    }
+  ],
+  "id":79
+}
+            </code>
+            
 </pre>
 			</li>
 			<li>

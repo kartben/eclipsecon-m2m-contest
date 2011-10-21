@@ -58,8 +58,9 @@ ul li ul li {
 	float:left;
 	margin-top:-1em	;
 	width:240px;
-	height:140px;
-	background: #ffeaf1 url('logo-eclipsecon-10years.png') no-repeat 20px center;	
+	height:138px;
+	background: #ffeaf1 url('logo-eclipsecon-10years.png') no-repeat 20px center;
+/*	border-right: 5px dotted #252223; */
 }
 
 #header {
@@ -72,10 +73,12 @@ ul li ul li {
 	font-size:1.8em;
 	color: white;
 	text-shadow: 1px 1px 10px #ef4323;
+	border-bottom: 2px dotted white;
 }
 
 #toc {
 	width:350px;
+	margin-top:2em;
 	margin-left:30px;
 	border: 1px dotted black;
 }
