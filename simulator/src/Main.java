@@ -8,11 +8,16 @@
  * implementation
  *******************************************************************************/
 import java.net.UnknownHostException;
+import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Timer;
 import java.util.TimerTask;
+
+import org.bson.types.ObjectId;
 
 import com.mongodb.BasicDBObject;
 import com.mongodb.DB;
@@ -53,19 +58,29 @@ public class Main {
 	}
 
 	public static void main(String[] args) {
-		System.out.println("Starting simulation");
-
 		Mongo m;
+
+		List<String> argsList = Arrays.asList(args);
+
 		try {
 			m = new Mongo("91.121.117.128", 27017);
 			DB db = m.getDB("sensors");
 			final DBCollection sensorsCollection = db.getCollection("data");
 
+			if (argsList.contains("-resetSensorInfo")) {
+				DBCollection infoCollection = db.getCollection("info");
+
+				System.out.println("Resetting sensors/info collection");
+				resetInfoCollection(infoCollection);
+				System.out.println("... done");
+
+				System.exit(0);
+			}
+
 			// schedule data consolidation jobs
 			int delay = 0;
 			for (final Entry<String, Integer> entry : consolidationJobs
 					.entrySet()) {
-
 				Timer t = new Timer(entry.getKey() + " consolidation job");
 
 				t.schedule(new TimerTask() {
@@ -78,24 +93,28 @@ public class Main {
 
 			}
 
-			while (true) {
-				for (Entry<String, SimulationParameter> entry : simulatedSensors
-						.entrySet()) {
-					String sensorName = entry.getKey();
-					SimulationParameter simulationParameter = entry.getValue();
+			if (argsList.contains("-simulate")) {
+				System.out.println("Starting simulation");
+				while (true) {
+					for (Entry<String, SimulationParameter> entry : simulatedSensors
+							.entrySet()) {
+						String sensorName = entry.getKey();
+						SimulationParameter simulationParameter = entry
+								.getValue();
 
-					SensorData sensorData = null;
-					if (sensorName.endsWith("TEMPERATURE")) {
-						sensorData = new SensorData(sensorName,
-								simulationParameter.updateValue() / 100.0);
-					} else {
-						sensorData = new SensorData(sensorName,
-								simulationParameter.updateValue());
+						SensorData sensorData = null;
+						if (sensorName.endsWith("TEMPERATURE")) {
+							sensorData = new SensorData(sensorName,
+									simulationParameter.updateValue() / 100.0);
+						} else {
+							sensorData = new SensorData(sensorName,
+									simulationParameter.updateValue());
+						}
+						System.out.println(sensorData);
+						sensorsCollection.insert(sensorData);
 					}
-					System.out.println(sensorData);
-					sensorsCollection.insert(sensorData);
+					Thread.sleep(5000);
 				}
-				Thread.sleep(5000);
 			}
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
@@ -104,6 +123,25 @@ public class Main {
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
+	}
+
+	private static void resetInfoCollection(DBCollection infoCollection) {
+		infoCollection.drop();
+
+		infoCollection.insert(new SensorInfo("CUBE_TEMPERATURE",
+				"Temperature at the cube", "¡C"));
+		infoCollection.insert(new SensorInfo("CUBE_ILLUMINANCE",
+				"Ambient light level at the cube", "lux"));
+
+		infoCollection.insert(new SensorInfo("STATION1_TEMPERATURE",
+				"Temperature at station #1", "¡C"));
+		infoCollection.insert(new SensorInfo("STATION1_ILLUMINANCE",
+				"Ambient light level at station #1", "lux"));
+
+		infoCollection.insert(new SensorInfo("STATION2_TEMPERATURE",
+				"Temperature at station #2", "¡C"));
+		infoCollection.insert(new SensorInfo("STATION2_ILLUMINANCE",
+				"Ambient light level at station #2", "lux"));
 	}
 
 	private static void performMapReduce(DBCollection collection,
@@ -143,7 +181,10 @@ public class Main {
 		// we consolidate only the data received on the last interval
 		long startingPoint = (System.currentTimeMillis() / interval) * interval;
 		DBObject query = new BasicDBObject();
-		query.put("$where", "this._id.getTimestamp() >" + startingPoint);
+		// System.out.println(Long.toHexString(startingPoint / 1000)
+		// + "000000000000000000");
+		query.put("_id", new BasicDBObject("$gte", new ObjectId(new Date(
+				startingPoint))));
 
 		MapReduceCommand mrc = new MapReduceCommand(collection, map, reduce,
 				outputCollection, OutputType.MERGE, query);
