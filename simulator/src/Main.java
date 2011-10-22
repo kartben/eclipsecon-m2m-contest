@@ -167,7 +167,7 @@ public class Main {
 				+ "        total += v.total;\r\n"
 				+ "        count += v.count;\r\n"
 				+ "        min = Math.min(v.min, min);\r\n"
-				+ "        max = Math.max(v,max, max);\r\n"
+				+ "        max = Math.max(v.max, max);\r\n"
 				+ "    }\r\n"
 				+ "    return { sensorId: key.sensorId, total: total, min: min, max: max, count: count };\r\n"
 				+ "};";
