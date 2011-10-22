@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" name="org.eclipsecon.m2mcontest.connector.accessor">
+   <implementation class="org.eclipsecon.m2mcontest.connector.internal.M2MServerAccessor"/>
+   <service>
+      <provide interface="org.eclipsecon.m2mcontest.connector.IM2MServerAccessor"/>
+   </service>
+</scr:component>

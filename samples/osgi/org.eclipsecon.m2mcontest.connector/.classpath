@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry exported="true" kind="lib" path="lib/asm-3.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jersey-client-1.9.1.jar" sourcepath="/Users/kartben/.m2/repository/com/sun/jersey/jersey-client/1.9.1/jersey-client-1.9.1-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jersey-core-1.9.1.jar" sourcepath="/Users/kartben/.m2/repository/com/sun/jersey/jersey-core/1.9.1/jersey-core-1.9.1-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jersey-json-1.9.1.jar" sourcepath="/Users/kartben/.m2/repository/com/sun/jersey/jersey-json/1.9.1/jersey-json-1.9.1-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jettison-1.1.jar" sourcepath="/Users/kartben/.m2/repository/org/codehaus/jettison/jettison/1.1/jettison-1.1-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jsr311-api-1.1.1.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6"/>
+	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
