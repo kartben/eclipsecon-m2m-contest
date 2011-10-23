@@ -15,3 +15,8 @@ Bundle-ClassPath: lib/asm-3.1.jar,
  lib/jettison-1.1.jar,
  lib/jsr311-api-1.1.1.jar,
  .
+Export-Package: org.eclipsecon.m2mcontest.connector,
+ org.eclipsecon.m2mcontest.connector.resources,
+ org.eclipsecon.m2mcontest.connector.resources.consolidatedData,
+ org.eclipsecon.m2mcontest.connector.resources.data,
+ org.eclipsecon.m2mcontest.connector.resources.info
