@@ -41,7 +41,7 @@ hljs.initHighlightingOnLoad();
 							<a href="#api">API</a>
 						</li>
 						<li>
-							<a href="#application-example">Application example</a>
+							<a href="#application-examples">Application examples</a>
 						</li>
 						<li>
 							<a href="#jury">The jury</a>
@@ -288,15 +288,29 @@ hljs.initHighlightingOnLoad();
 </pre>
 			</li>
 		</ul>
-		<h2 id="application-example">
-			Application example
+		<h2 id="application-examples">
+			Application examples
 		</h2>
+		<h3>
+			Javascript
+		</h3>
 		<p>
-			We have put a very simple Javascript application on github to help you getting familiar with the API and the manipulation of consolidated data.<br>
+			We have put a very simple Javascript application on github to help you getting familiar with the API and the manipulation of consolidated data.
+		</p>
+		<p>
 			You can grab the source code at: <a href="https://github.com/kartben/eclipsecon-m2m-contest/tree/master/samples/" target="_blank">https://github.com/kartben/eclipsecon-m2m-contest/tree/master/samples/</a>
 		</p>
 		<p>
 			<iframe id="temperature-chart" src="google-chart.html" scrolling="no"></iframe>
+		</p>
+		<h3>
+			OSGi
+		</h3>
+		<p>
+			If you are building an OSGi-based application, then you probably want to use the <a href="https://github.com/kartben/eclipsecon-m2m-contest/tree/master/samples/osgi/org.eclipsecon.m2mcontest.connector" target="_blank">following bundle</a>. It publishes a service (<code>IM2MServerAccessor</code>) allowing you to easily get sensor data. You wil also automagically get notified when new data is available, by subscribing to the <code>m2m/sensor</code> EventAdmin topic.
+		</p>
+		<p>
+			The code of this bundle may not be 100% bug-free, but it should help you getting started!
 		</p>
 		<h2 id="jury">
 			Jury
