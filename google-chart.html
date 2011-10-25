@@ -8,7 +8,7 @@
 		});
 		google.load("jquery", "1");
 		
-		var baseURL = 'http://m2mcontest.eclipsecon.org/rest_api/sensors/consolidatedData_FiveMinute' ;
+		var baseURL = 'http://m2mcontest.eclipsecon.org/rest_api/sensors/consolidatedData_OneHour' ;
 
 		function updateChart() {
 
@@ -19,7 +19,7 @@
 								var rows = data.results;
 								for (var i = 0; i < rows.length; i++) {
 									dataTable.setValue(rows.length - i - 1, 0, new Date(rows[i]._id.ts["$date"]));
-									dataTable.setValue(rows.length - i - 1, column, rows[i].value.minimum);
+									dataTable.setValue(rows.length - i - 1, column, rows[i].value.average);
 								}
 							}
 							
@@ -39,20 +39,20 @@
 				dataTable.addColumn('number', 'Cube temp.');
 				dataTable.addColumn('number', 'Station #1 temp.');
 				dataTable.addColumn('number', 'Station #2 temp.');
-				dataTable.addRows(60);
+				dataTable.addRows(24);
 				var chart = new google.visualization.LineChart(document.getElementById('chart_div'));
 
 	
 	
-				var queryArgs = '?sort=%7B"_id":-1%7D&criteria=%7B"_id.sensorId"%3A"CUBE_TEMPERATURE"%7D&batch_size=60&callback=?' ;
+				var queryArgs = '?sort=%7B"_id":-1%7D&criteria=%7B"_id.sensorId"%3A"CUBE_TEMPERATURE"%7D&batch_size=24&callback=?' ;
 				var url = baseURL + queryArgs ;
 				$.getJSON(url, fillDataTableWithResults(1)) ;
 
-				var queryArgs = '?sort=%7B"_id":-1%7D&criteria=%7B"_id.sensorId"%3A"STATION1_TEMPERATURE"%7D&batch_size=60&callback=?' ;
+				var queryArgs = '?sort=%7B"_id":-1%7D&criteria=%7B"_id.sensorId"%3A"STATION1_TEMPERATURE"%7D&batch_size=24&callback=?' ;
 				var url = baseURL + queryArgs ;
 				$.getJSON(url, fillDataTableWithResults(2)) ;
 
-				var queryArgs = '?sort=%7B"_id":-1%7D&criteria=%7B"_id.sensorId"%3A"STATION2_TEMPERATURE"%7D&batch_size=60&callback=?' ;
+				var queryArgs = '?sort=%7B"_id":-1%7D&criteria=%7B"_id.sensorId"%3A"STATION2_TEMPERATURE"%7D&batch_size=24&callback=?' ;
 				var url = baseURL + queryArgs ;
 				$.getJSON(url, fillDataTableWithResults(3)) ;
 
