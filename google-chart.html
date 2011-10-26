@@ -8,9 +8,14 @@
 		});
 		google.load("jquery", "1");
 		
-		var baseURL = 'http://m2mcontest.eclipsecon.org/rest_api/sensors/consolidatedData_OneHour' ;
-
+		var periods = new Array() ;
+		periods.push({collection: 'OneMinute', howMany: 15}) ;
+		periods.push({collection: 'OneMinute', howMany: 180}) ;
+		periods.push({collection: 'FiveMinute', howMany: 72}) ;
+		periods.push({collection: 'OneHour', howMany: 24}) ;
+		
 		function updateChart() {
+				var baseURL = 'http://m2mcontest.eclipsecon.org/rest_api/sensors/consolidatedData_' + periods[document.getElementById('timeSelect').value].collection ;
 
 			    function fillDataTableWithResults(column) {
 					return function(data) {
@@ -34,25 +39,25 @@
 					};
 			    }
 	
+				var howMany = periods[document.getElementById('timeSelect').value].howMany ;
+	
 				var dataTable = new google.visualization.DataTable();
 				dataTable.addColumn('datetime', 'Time');
 				dataTable.addColumn('number', 'Cube temp.');
 				dataTable.addColumn('number', 'Station #1 temp.');
 				dataTable.addColumn('number', 'Station #2 temp.');
-				dataTable.addRows(24);
+				dataTable.addRows(howMany);
 				var chart = new google.visualization.LineChart(document.getElementById('chart_div'));
-
-	
-	
-				var queryArgs = '?sort=%7B"_id":-1%7D&criteria=%7B"_id.sensorId"%3A"CUBE_TEMPERATURE"%7D&batch_size=24&callback=?' ;
+					
+				var queryArgs = '?sort=%7B"_id":-1%7D&criteria=%7B"_id.sensorId"%3A"CUBE_TEMPERATURE"%7D&batch_size=' + howMany + '&callback=?' ;
 				var url = baseURL + queryArgs ;
 				$.getJSON(url, fillDataTableWithResults(1)) ;
 
-				var queryArgs = '?sort=%7B"_id":-1%7D&criteria=%7B"_id.sensorId"%3A"STATION1_TEMPERATURE"%7D&batch_size=24&callback=?' ;
+				var queryArgs = '?sort=%7B"_id":-1%7D&criteria=%7B"_id.sensorId"%3A"STATION1_TEMPERATURE"%7D&batch_size=' + howMany + '&callback=?' ;
 				var url = baseURL + queryArgs ;
 				$.getJSON(url, fillDataTableWithResults(2)) ;
 
-				var queryArgs = '?sort=%7B"_id":-1%7D&criteria=%7B"_id.sensorId"%3A"STATION2_TEMPERATURE"%7D&batch_size=24&callback=?' ;
+				var queryArgs = '?sort=%7B"_id":-1%7D&criteria=%7B"_id.sensorId"%3A"STATION2_TEMPERATURE"%7D&batch_size=' + howMany + '&callback=?' ;
 				var url = baseURL + queryArgs ;
 				$.getJSON(url, fillDataTableWithResults(3)) ;
 
@@ -63,6 +68,12 @@
 		<title></title>
 	</head>
 	<body>
+		<select id="timeSelect" onChange="updateChart();">
+			<option value="0">15 minutes (1 min resolution)</option>
+			<option value="1">3 hours (1 min resolution)</option>
+			<option value="2">6 hours (5 min resolution)</option>
+			<option value="3">24 hours (1 hour resolution)</option>
+		</select>
 		<div id='chart_div' style='width: 500px; height: 200px;'></div>
 		<div id="content"></div>
 	</body>
