@@ -213,7 +213,19 @@ void loop(){
     Serial.println("J'ai recu un truc") ;
     Serial.println(String(xbeeIlluminance) + " lux") ;
     Serial.println(String(xbeeTemperature) + " C") ;
-//    Serial.println(xbeeStationName) ;
+    Serial.println(xbeeStationName) ;
+
+
+    // store the received command in mongodb
+    String json = "docs=[" ;
+    json += "{\"sensor\":\"" + String(xbeeStationName) +  "_ILLUMINANCE\",\"value\":" + String(xbeeIlluminance) + "}" ;
+    json += "," ;
+    json += "{\"sensor\":\"" + String(xbeeStationName) +  "_TEMPERATURE\",\"value\":" + String(dtostrf(xbeeTemperature/100., 2, 2, s)) + "}" ;
+    json += "]" ; 
+
+    Serial.println(json) ;
+    sendData(json, "http://m2mcontest.eclipsecon.org/REST/sensors/data/_insert" ); 
+    //    Serial.println(xbeeStationName) ;
   }
 
 
@@ -279,7 +291,7 @@ void loop(){
       json += "]" ; 
 
       Serial.println(json) ;
-      sendData(json, "/REST/commands/history/_insert" );
+      sendData(json, "http://m2mcontest.eclipsecon.org/REST/commands/history/_insert" );
 
       // we don't want to display such an SMS
       smsDisplayIndex = -1 ;
@@ -327,8 +339,6 @@ void loop(){
       //    lcdSerial.print("Noise. " + String(dtostrf(soundLevel,2,2,s))) ;
       //    break;
     }
-
-    Serial.println(millis()) ;
 
     if( millis() - lastLCDRefresh > 500) {
       lastLCDRefresh = millis() ;
@@ -409,22 +419,22 @@ boolean xbeeCheck(int &illuminance, int &temperature, char* stationName) {
 
       if (rx.getOption() == ZB_PACKET_ACKNOWLEDGED) {
         // the sender got an ACK
-//        flashLed(statusLed, 10, 10);
+        //        flashLed(statusLed, 10, 10);
       } 
       else {
         // we got it (obviously) but sender didn't get an ACK
-//        flashLed(errorLed, 2, 20);
+        //        flashLed(errorLed, 2, 20);
       }
 
       int fio = isKnownFio(rx.getRemoteAddress64().getLsb()) ;
       if(fio != -1) {
         Serial.print("Received something from " + fioNames[fio] + ": ") ; 
-       
-          illuminance = rx.getData(0) * 255 + rx.getData(1) ;
-          temperature = rx.getData(2) * 255 + rx.getData(3) ;
-    //      fioNames[fio].toCharArray(stationName, fioNames[fio].length()) ;
-          
-          return true;
+
+        illuminance = rx.getData(0) * 255 + rx.getData(1) ;
+        temperature = rx.getData(2) * 255 + rx.getData(3) ;
+        fioNames[fio].toCharArray(stationName, fioNames[fio].length() + 1) ;
+
+        return true;
       } 
       else {
         Serial.print("Received something from unknown station: ") ; 
@@ -442,20 +452,20 @@ boolean xbeeCheck(int &illuminance, int &temperature, char* stationName) {
 
       if (msr.getStatus() == ASSOCIATED) {
         // yay this is great.  flash led
-//       flashLed(statusLed, 10, 10);
+        //       flashLed(statusLed, 10, 10);
       } 
       else if (msr.getStatus() == DISASSOCIATED) {
         // this is awful.. flash led to show our discontent
-//        flashLed(errorLed, 10, 10);
+        //        flashLed(errorLed, 10, 10);
       } 
       else {
         // another status
-//        flashLed(statusLed, 5, 10);
+        //        flashLed(statusLed, 5, 10);
       }
     } 
     else {
       // not something we were expecting
-//      flashLed(errorLed, 1, 25);    
+      //      flashLed(errorLed, 1, 25);    
     }
   }
   return false ;
@@ -469,6 +479,7 @@ int isKnownFio(uint32_t addr) {
   }
   return -1 ;
 }
+
 
 
 
