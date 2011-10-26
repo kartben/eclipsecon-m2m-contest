@@ -6,7 +6,7 @@
 float getIlluminance(int pin) {
   int val = analogRead(pin);
   float Vout0 = val * 0.0048828125;	                            // calculate the voltage
-  int lux = 500 / ( PHOTOCELL_RESISTOR * ( (5-Vout0) / Vout0 ) );   // calculate the Lux
+  int lux = 500. / ( PHOTOCELL_RESISTOR * ( (5.0 - Vout0) / Vout0 ) );   // calculate the Lux
 
   return lux ;
 }

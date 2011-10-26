@@ -2,9 +2,15 @@
 #include "temperature_LM35.h"
 
 float getTemperature(int pin) {
-  float K = (((analogRead(pin) / 1023.) * 5.) * 100.);
-  float C = K-273.;
-  
+  float C = ( analogRead(pin) *0.0048828125 * 100. ) - 273. ;
+
+  // there seems to be an offset of about 25C.
+  // Would probably be better to really calibrate the sensor with its dedicated pin though..
+  C = C - 25.0 ; 
+
   return C ;
 }
+
+
+
 
