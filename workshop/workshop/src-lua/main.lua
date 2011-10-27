@@ -7,6 +7,18 @@ local frameparser = require "frameparser"
 
 local serialdev
 
+local station1address = "0x0013A20040773379"
+local station2address = "0x0013A20040773426"
+
+local station1id = "Station1"
+local station2id = "Station2"
+
+local address2assetID = {}
+address2assetID[station1address]=station1id
+address2assetID[station2address]=station2id
+
+local address2assets = {}
+
 ---
 -- Stop the application
 local function stop(exitcode)
@@ -36,12 +48,21 @@ local function main ()
     serialdev,err = serial.open("/dev/ttyS0", serial_config)
     if not serial then log("APP", "ERROR","Serial open error", err); stop(1) end
 
-    -- create and register new asset
-    local assetid = "m2mcontest"
-    local asset = racoon.new(assetid)
-    local status, err = asset:register()
-    if not status then log("APP", "ERROR","Unable to register asset (%s) : %s",assetid, err); stop(1) end
-    log("APP", "INFO", "Asset (%s) registered.",assetid) 
+    -- create and register new station 1
+    local station1 = racoon.new(station1id)
+    local status, err = station1:register()
+    if not status then log("APP", "ERROR","Unable to register asset (%s) : %s",station1id, err); stop(1) end
+    log("APP", "INFO", "Asset (%s) registered.",station1id)
+    
+     -- create and register new asset
+    local station2 = racoon.new(station2id)
+    local status, err = station2:register()
+    if not status then log("APP", "ERROR","Unable to register asset (%s) : %s",station2id, err); stop(1) end
+    log("APP", "INFO", "Asset (%s) registered.",station2id)  
+    
+    -- associate address to assets
+    address2assets[station1address]=station1
+    address2assets[station2address]=station2 
     
    	while true do
    	   -- read packet to extract the frame
@@ -59,25 +80,29 @@ local function main ()
                 if #appdata ~=4 then 
                     log ("APP","ERROR","Bad receive data size (4 expected, got %d).",#appdata)
                 else
-                    -- we manage only broadcast frame from an end device.
-                    if not (frame.receiveoptions.sentfromenddevice and frame.receiveoptions.broadcast)then
-                        log ("APP","INFO","Packet ignored (not sent by broadcast from an end device).")
+                    -- get right asset
+                    local asset = address2assets[frame.address64]
+                    if not asset then 
+                        log ("APP","ERROR","Unexpected asset addresse (got %s, expected %s or %s.",frame.address64,station1address,station2address)
                     else
+                        -- get asset id
+                        local assetID = address2assetID[frame.address64]
+                        
                         -- get application data                                      
                         local illuminance = appdata[1]  * 256 +  appdata[2]
-                        local temperature = appdata[3]  * 256 +  appdata[4]
-                        log ("APP","INFO","illuminance (%d lux),temperature(%.2f°C).",illuminance,temperature/100)
+                        local temperature = (appdata[3]  * 256 +  appdata[4])/100
+                        log ("APP","INFO","illuminance (%d lux),temperature(%.2f°C) for asset %s.",illuminance,temperature,assetID)
                     
                         --push data on the server
                         asset:pushdata ("", {illuminance=illuminance,temperature=temperature})
                         asset : triggerpolicy("*")
                         local status, err = asset:connecttoserver()
                         if not status then 
-                            log ("APP","ERROR","Unable to connect to server! (%s).",err)
+                           log ("APP","ERROR","Unable to connect to server! (%s).",err)
                         else
-                            log ("APP","INFO","Data send to server.")
+                           log ("APP","INFO","Data send to server for asset %s.",assetID)
                         end
-                    end
+                    end                    
                 end
             end
 	   end

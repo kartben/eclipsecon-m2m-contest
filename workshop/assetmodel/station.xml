@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="ASCII"?>
+<models xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://m2mop.net/schema/model/1.7/" xsi:schemaLocation="http://m2mop.net/schema/model/1.7/ http://m2mop.net/schema/model/model-1.7.xsd">
+  <asset-model customer-path="/Developer Program/eclipsecon2_company" model-name="EclipseConStationAsset">
+    <data>
+      <parameter name="temperature" type="double" access-rights="RO" label="Temperature" path="/" unit="&#xb0;C"/>
+      <parameter name="illuminance" type="double" access-rights="RO" label="Illuminance" path="/" unit="lux"/>
+    </data>
+  </asset-model>
+</models>
