@@ -270,11 +270,14 @@ void loop(){
       Serial.print("Message: ");
       Serial.println(smsBuffer);
       Serial.println("---------\n\n");
-      memset(smsMarqueeBuffer, '\0', 250);
+      memset(smsMarqueeBuffer, ' ', 250);
       String s = "SMS from " + String(phoneNumber) + " --> " ;
       s += smsBuffer;
-      s.toCharArray(smsMarqueeBuffer, s.length()) ;
-      Serial.println(smsMarqueeBuffer) ;
+      s.toCharArray(smsMarqueeBuffer, 250) ;
+      smsMarqueeBuffer[s.length() - 1] = 'X'; 
+      for (int i = s.length() - 1 ; i < 250 ; i++) {
+        smsMarqueeBuffer[i] = ' ';
+      }
 
       smsDisplayIndex = 0;
       smsReceived = true; 
