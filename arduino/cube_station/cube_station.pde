@@ -416,16 +416,6 @@ boolean xbeeCheck(int &illuminance, int &temperature, char* stationName) {
       // now fill our zb rx class
       xbee.getResponse().getZBRxResponse(rx);
 
-
-      if (rx.getOption() == ZB_PACKET_ACKNOWLEDGED) {
-        // the sender got an ACK
-        //        flashLed(statusLed, 10, 10);
-      } 
-      else {
-        // we got it (obviously) but sender didn't get an ACK
-        //        flashLed(errorLed, 2, 20);
-      }
-
       int fio = isKnownFio(rx.getRemoteAddress64().getLsb()) ;
       if(fio != -1) {
         Serial.print("Received something from " + fioNames[fio] + ": ") ; 
@@ -444,23 +434,6 @@ boolean xbeeCheck(int &illuminance, int &temperature, char* stationName) {
           //delay(100) ;
         }
         Serial.println() ;      
-      }
-    } 
-    else if (xbee.getResponse().getApiId() == MODEM_STATUS_RESPONSE) {
-      xbee.getResponse().getModemStatusResponse(msr);
-      // the local XBee sends this response on certain events, like association/dissociation
-
-      if (msr.getStatus() == ASSOCIATED) {
-        // yay this is great.  flash led
-        //       flashLed(statusLed, 10, 10);
-      } 
-      else if (msr.getStatus() == DISASSOCIATED) {
-        // this is awful.. flash led to show our discontent
-        //        flashLed(errorLed, 10, 10);
-      } 
-      else {
-        // another status
-        //        flashLed(statusLed, 5, 10);
       }
     } 
     else {
