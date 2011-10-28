@@ -108,7 +108,7 @@ char smsMarqueeBuffer[250];
 char phoneNumber[20];
 
 long lastSmsCheckTime = 0;
-const int smsCheckInterval = 20000; 
+const int smsCheckInterval = 2000; 
 
 // ***************************
 
