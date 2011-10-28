@@ -302,7 +302,8 @@ void loop(){
     int res = sscanf(smsBuffer, "FAN%d %d", &motor, &speed) ;
     if(res == 2) {
       // it is a command indeed!
-      int adjustedSpeed = map(abs(speed), 0, 100, 0, 255) ;
+      int adjustedSpeed = map(abs(speed), 1, 100, 50, 255) ;
+      if (speed == 0) adjustedSpeed = 0 ; 
       Serial.println("Setting speed of motor #" + String(motor) + " to " + String(adjustedSpeed) + "(" + String(speed) +  "%)" ) ;
       analogWrite((motor == 1) ? MOTOR_A_PWM : MOTOR_B_PWM , adjustedSpeed);
       digitalWrite(MOTOR_A_DIR, (speed > 0) ? HIGH : LOW);
