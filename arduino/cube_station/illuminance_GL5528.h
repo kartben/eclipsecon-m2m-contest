@@ -3,6 +3,6 @@
 
 #include "WProgram.h"
 
-float getIllminance(int pin) ;
+float getIlluminance(int pin) ;
 
 #endif
