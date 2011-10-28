@@ -45,7 +45,7 @@
 /** XBee variables **/
 /********************/
 uint32_t knownFios[] = { 
-  0x40773379, 0x40773426 } 
+  0x407A629F, 0x407A63BE } 
 ;
 
 String fioNames[] = { 
