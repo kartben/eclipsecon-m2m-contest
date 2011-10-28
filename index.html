@@ -288,6 +288,91 @@ hljs.initHighlightingOnLoad();
 </pre>
 			</li>
 		</ul>
+		<h3>
+			<code><strong>rfid</strong></code> database
+		</h3>
+		<ul>
+			<li>
+				<p>
+					<code><strong>history</strong></code> collection contains the history of the scans performed by the RFID scanner.
+				</p>
+				<p>
+					Returned values have the following format:
+				</p>
+				<pre>
+<code>
+{
+  "ok":1,
+  "results":[
+    {
+      "_id":{
+        "$oid":"4eaaaa5dd3739934e100002e"
+      },
+      "tag":"B73C5F60"
+    },
+    {
+      "_id":{
+        "$oid":"4eaaacd9d3739934e100007f"
+      },
+      "tag":"B73C5F60"
+    }
+  ],
+  "id":499
+}
+</code>       
+</pre>To know what physical object corresponds to which tag ID, you should look into the <code>info</code> collection. See below!
+			</li>
+			<li>
+				<p>
+					<code><strong>info</strong></code> collection contains the human-readable description of the physical objects that can be scanned.
+				</p>
+				<p>
+					Returned values have the following format:
+				</p>
+				<pre>
+<code>TBD.</code>        
+</pre>
+			</li>
+		</ul>
+		<h3>
+			<code><strong>commands</strong></code> database
+		</h3>
+		<ul>
+			<li>
+				<p>
+					<code><strong>history</strong></code> collection contains the history of the command received and actually handled by the Cube. You may want to use it to get the latest command received, or compute statistics regarding the most executed commands.
+				</p>
+				<p>
+					Returned values have the following format:
+				</p>
+				<pre>
+            <code>
+{
+  "ok":1,
+  "results":[
+    {
+      "command":"FAN1 80",
+      "_id":{
+        "$oid":"4ea80530d37399153d0000cd"
+      },
+      "type":"SMS",
+      "from":"33619196101"
+    },
+    {
+      "command":"FAN1 30",
+      "_id":{
+        "$oid":"4ea814a6d37399274a00008d"
+      },
+      "type":"SMS",
+      "from":"33619196101"
+    }
+  ],
+  "id":232
+}
+            </code>
+</pre>The only supported type at the moment is '<code>SMS</code>'. In case of an SMS, the '<code>from</code>' attribute is the phone number of the SMS sender.
+			</li>
+		</ul>
 		<h2 id="application-examples">
 			Application examples
 		</h2>
