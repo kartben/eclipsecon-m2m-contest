@@ -128,20 +128,22 @@ public class Main {
 	private static void resetInfoCollection(DBCollection infoCollection) {
 		infoCollection.drop();
 
-		infoCollection.insert(new SensorInfo("CUBE_TEMPERATURE",
+		infoCollection.insert(new SensorInfo("CUBE_TEMPERATURE", "temperature",
 				"Temperature at the cube", "¡C"));
-		infoCollection.insert(new SensorInfo("CUBE_ILLUMINANCE",
-				"Ambient light level at the cube", "lux"));
+		infoCollection.insert(new SensorInfo("CUBE_ILLUMINANCE", "light",
+				"Ambient light level at the cube", "lx"));
+		infoCollection.insert(new SensorInfo("CUBE_HUMIDITY", "humidity",
+				"Humidity level at the cube", "%"));
 
 		infoCollection.insert(new SensorInfo("STATION1_TEMPERATURE",
-				"Temperature at station #1", "¡C"));
-		infoCollection.insert(new SensorInfo("STATION1_ILLUMINANCE",
-				"Ambient light level at station #1", "lux"));
+				"temperature", "Temperature at station #1", "¡C"));
+		infoCollection.insert(new SensorInfo("STATION1_ILLUMINANCE", "light",
+				"Ambient light level at station #1", "lx"));
 
 		infoCollection.insert(new SensorInfo("STATION2_TEMPERATURE",
-				"Temperature at station #2", "¡C"));
-		infoCollection.insert(new SensorInfo("STATION2_ILLUMINANCE",
-				"Ambient light level at station #2", "lux"));
+				"temperature", "Temperature at station #2", "¡C"));
+		infoCollection.insert(new SensorInfo("STATION2_ILLUMINANCE", "light",
+				"Ambient light level at station #2", "lx"));
 	}
 
 	private static void performMapReduce(DBCollection collection,
