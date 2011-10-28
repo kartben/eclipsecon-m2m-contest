@@ -103,7 +103,7 @@ char rfidSerial[20] = "" ;
 // Variables for GSM
 boolean smsReceived = false;
 int smsDisplayIndex = -1 ;
-char smsBuffer[160];
+char smsBuffer[250];
 char smsMarqueeBuffer[250];
 char phoneNumber[20];
 
@@ -119,7 +119,14 @@ byte mac[] = {
   0x90, 0xA2, 0xDA, 0x00, 0x44, 0x86};
 // assign an IP address for the controller:
 byte ip[] = { 
-  192,168,2,50 };
+  10,41,51,129 };
+
+byte gateway[] = { 
+  10,41,51,254 };
+
+byte mask[] = { 
+  255,255,255,0 };
+
 
 //  The address of the server you want to connect to (MongoDB REST API):
 byte server[] = { 
@@ -161,20 +168,28 @@ void setup()
   LCD_ClearScreen();
   lcdSerial.print(" ...  BOOT  ... ") ; 
 
+  // Setup ta Ethernet stack
+  lcdSerial.print("ETH.") ; 
+  Ethernet.begin(mac, ip, gateway, mask);
+  delay(1000) ;
+  lcdSerial.print(" OK!") ; 
+
   // Setup GSM
-  Serial.println() ;
   Serial.println() ;
   Serial.println("... Initializing GSM stack ...") ;
   Serial.println() ;
-  if (gsm.begin())
+  lcdSerial.print("GSM.") ; 
+  if (gsm.begin()) {
     Serial.println("\n... GSM ... READY!");
-  else Serial.println("\n... GSM ... IDLE!");
+    lcdSerial.print(" OK!") ; 
+  }
+  else {
+    Serial.println("\n... GSM ... IDLE!");
+    lcdSerial.print(" KO!") ; 
+  }
 
   // Setup RFID
   setupRfid() ;
-
-  // Setup ta Ethernet stack
-  Ethernet.begin(mac, ip);
 
   // Setup motors (fans)
   pinMode(MOTOR_A_PWM, OUTPUT);
@@ -183,11 +198,9 @@ void setup()
   pinMode(MOTOR_B_DIR, OUTPUT);
   digitalWrite(MOTOR_A_DIR, HIGH);
   digitalWrite(MOTOR_B_DIR, HIGH);
-  analogWrite(MOTOR_A_PWM, 100);
-  analogWrite(MOTOR_B_PWM, 100);
+  analogWrite(MOTOR_A_PWM, 0);
+  analogWrite(MOTOR_B_PWM, 0);
 
-
-  lcdSerial.println("       OK") ; 
   delay(100) ;
   LCD_ClearScreen();
 }
@@ -210,11 +223,8 @@ void loop(){
   char xbeeStationName[16] = "";
   if (xbeeCheck(xbeeIlluminance, xbeeTemperature, xbeeStationName))
   {
-    Serial.println("J'ai recu un truc") ;
-    Serial.println(String(xbeeIlluminance) + " lux") ;
+    Serial.print(String(xbeeIlluminance) + " lux - ") ;
     Serial.println(String(xbeeTemperature) + " C") ;
-    Serial.println(xbeeStationName) ;
-
 
     // store the received command in mongodb
     String json = "docs=[" ;
@@ -232,33 +242,42 @@ void loop(){
 
   // Check if an RFID tag is present
   if ( read_serial(rfidSerial) > 0 ) {
+    playMelodyRfidScan(SPEAKER_PIN) ;
     Serial.println(rfidSerial) ;
     delay(50) ;
-    playMelodyRfidScan(SPEAKER_PIN) ;
+
+    // store the scanned tag ID in mongodb
+    String json = "docs=[" ;
+    json += "{\"tag\":\"" + String(rfidSerial) +  "\"}" ;
+    json += "]" ; 
+
+    Serial.println(json) ;
+    sendData(json, "http://m2mcontest.eclipsecon.org/REST/rfid/history/_insert" );
+
   }
 
   if(millis() - lastSmsCheckTime > smsCheckInterval) {
     Serial.print("Check SMS ... ") ;
+    memset(smsBuffer, '\0', 250);
     // Check if we have received an SMS
-    if(gsm.readSMS(smsBuffer, 160, phoneNumber, 20))
+    if(gsm.readSMS(smsBuffer, 250, phoneNumber, 20))
     {
+      playMelodySmsReceived(SPEAKER_PIN);
+
       Serial.println("\n\n---------");
       Serial.print("Phone #: ");
       Serial.println(phoneNumber);
       Serial.print("Message: ");
       Serial.println(smsBuffer);
       Serial.println("---------\n\n");
-      memset(smsMarqueeBuffer, ' ', 250);
+      memset(smsMarqueeBuffer, '\0', 250);
       String s = "SMS from " + String(phoneNumber) + " --> " ;
       s += smsBuffer;
-      s += "  ";
       s.toCharArray(smsMarqueeBuffer, s.length()) ;
       Serial.println(smsMarqueeBuffer) ;
 
       smsDisplayIndex = 0;
       smsReceived = true; 
-
-      playMelodySmsReceived(SPEAKER_PIN);
 
       // Blink LCD
       for(int i = 0; i < 5 ; i++) {
@@ -280,7 +299,7 @@ void loop(){
     int res = sscanf(smsBuffer, "FAN%d %d", &motor, &speed) ;
     if(res == 2) {
       // it is a command indeed!
-      int adjustedSpeed = map(abs(speed), 0, 100, 70, 255) ;
+      int adjustedSpeed = map(abs(speed), 0, 100, 0, 255) ;
       Serial.println("Setting speed of motor #" + String(motor) + " to " + String(adjustedSpeed) + "(" + String(speed) +  "%)" ) ;
       analogWrite((motor == 1) ? MOTOR_A_PWM : MOTOR_B_PWM , adjustedSpeed);
       digitalWrite(MOTOR_A_DIR, (speed > 0) ? HIGH : LOW);
@@ -307,7 +326,7 @@ void loop(){
     LCD_secondLine[15] = smsMarqueeBuffer[smsDisplayIndex++] ;
     LCD_MoveCursor(16);
     lcdSerial.print(LCD_secondLine) ;
-    delay(300);
+    delay(150);
   } 
 
 
@@ -342,7 +361,6 @@ void loop(){
 
     if( millis() - lastLCDRefresh > 500) {
       lastLCDRefresh = millis() ;
-      Serial.println("refresh") ;
 
       LCD_MoveCursor(0) ;
       lcdSerial.print("                ") ;
@@ -379,8 +397,13 @@ void loop(){
 
 // this method makes a HTTP connection to the MongoDB REST interface:
 void sendData(String thisData, String url) {
-  // if there's a successful connection:
-  if (client.connect()) {
+  if (!client.connect()) {
+    Serial.print("Ethernet KO... retrying... ");
+    client.flush() ;
+    client.stop() ;  
+    (client.connect()) ? Serial.println(" OK") : Serial.println(" still KO!")  ;
+  }
+  if(client.connected()) {
     client.println("POST " + url + " HTTP/1.1");
     client.println( "Host: m2mcontest.eclipsecon.org" );
     client.print( "Content-Length: " );
@@ -395,10 +418,6 @@ void sendData(String thisData, String url) {
     // note the time that the connection was made:
     lastConnectionTime = millis();
   } 
-  else {
-    // if we couldn't make a connection:
-    Serial.println("KO");
-  }
 }
 
 boolean xbeeCheck(int &illuminance, int &temperature, char* stationName) {
@@ -452,7 +471,6 @@ int isKnownFio(uint32_t addr) {
   }
   return -1 ;
 }
-
 
 
 
