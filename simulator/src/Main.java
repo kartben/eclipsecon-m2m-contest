@@ -144,6 +144,64 @@ public class Main {
 				"temperature", "Temperature at station #2", "¡C"));
 		infoCollection.insert(new SensorInfo("STATION2_ILLUMINANCE", "light",
 				"Ambient light level at station #2", "lx"));
+
+		// Freedroidz stuff
+
+		// NXT 0
+		infoCollection.insert(new SensorInfo("NXT0_PORT1_TOUCH_COUNT", "xxx",
+				"Counts how many times the scorpion has hit something", ""));
+
+		infoCollection.insert(new SensorInfo("NXT0_PORT2_SOUND", "noise",
+				"Loudness", "dB"));
+
+		infoCollection.insert(new SensorInfo("NXT0_PORT3_SONIC", "distance",
+				"Shows distance measured by ultrasonic sensor", "cm"));
+
+		infoCollection
+				.insert(new SensorInfo(
+						"NXT0_MOTORA_TACHO",
+						"distance",
+						"shows how far motor A (right wheel) travelled:"
+								+ " forward increases,backward decreases, hint: wheeldiameter is approx 5cm ",
+						"¡"));
+
+		infoCollection
+				.insert(new SensorInfo(
+						"NXT0_MOTORC_TACHO",
+						"distance",
+						"shows how far motor C (right wheel) travelled:"
+								+ " forward increases,backward decreases, hint: wheeldiameter is approx 5cm ",
+						"¡"));
+
+		// NXT 1
+
+		infoCollection.insert(new SensorInfo("NXT1_PORT1_TOUCH_COUNT", "xxx",
+				"\"High Fives\" the robot got", ""));
+
+		infoCollection.insert(new SensorInfo("NXT1_PORT2_SOUND", "noise",
+				"Loudness", "dB"));
+
+		infoCollection.insert(new SensorInfo("NXT1_PORT3_SONIC", "distance",
+				"Shows distance measured by ultrasonic sensor", "cm"));
+
+		infoCollection.insert(new SensorInfo("NXT1_PORT4_COLOR", "color",
+				"The color below the robot", ""));
+
+		infoCollection
+				.insert(new SensorInfo(
+						"NXT1_MOTORA_TACHO",
+						"distance",
+						"shows how far motor A (right wheel) travelled:"
+								+ " forward increases,backward decreases, hint: wheeldiameter is approx 4.32cm ",
+						"¡"));
+
+		infoCollection
+				.insert(new SensorInfo(
+						"NXT1_MOTORC_TACHO",
+						"distance",
+						"shows how far motor C (right wheel) travelled:"
+								+ " forward increases,backward decreases, hint: wheeldiameter is approx 4.32cm ",
+						"¡"));
 	}
 
 	private static void performMapReduce(DBCollection collection,
