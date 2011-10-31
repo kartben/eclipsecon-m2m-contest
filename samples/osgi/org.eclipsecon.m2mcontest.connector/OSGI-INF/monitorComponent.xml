@@ -3,5 +3,5 @@
    <implementation class="org.eclipsecon.m2mcontest.connector.internal.DataMonitorComponent"/>
    <reference bind="setServerAccessor" cardinality="1..1" interface="org.eclipsecon.m2mcontest.connector.IM2MServerAccessor" name="IM2MServerAccessor" policy="static"/>
    <reference bind="setEventAdmin" cardinality="0..1" interface="org.osgi.service.event.EventAdmin" name="EventAdmin" policy="static"/>
-   <property name="pollingInterval" type="Integer" value="2"/>
+   <property name="pollingInterval" type="Integer" value="10"/>
 </scr:component>

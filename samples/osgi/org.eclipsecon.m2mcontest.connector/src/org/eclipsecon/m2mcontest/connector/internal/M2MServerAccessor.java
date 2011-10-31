@@ -29,7 +29,7 @@ import com.sun.jersey.api.client.config.DefaultClientConfig;
 
 public class M2MServerAccessor implements IM2MServerAccessor {
 
-	private static final int DEFAULT_BATCH_SIZE = 100;
+	private static final int DEFAULT_RESULTS_SIZE = 100;
 	private WebResource service;
 
 	public M2MServerAccessor() {
@@ -56,7 +56,7 @@ public class M2MServerAccessor implements IM2MServerAccessor {
 	public ConsolidatedData getSensorConsolidatedData(
 			CONSOLIDATION_RANGE range, String criteria, String sort) {
 		return getSensorConsolidatedData(range, criteria, sort,
-				DEFAULT_BATCH_SIZE);
+				DEFAULT_RESULTS_SIZE);
 	}
 
 	@Override
@@ -73,7 +73,7 @@ public class M2MServerAccessor implements IM2MServerAccessor {
 
 	@Override
 	public Info getSensorInfo(String criteria, String sort) {
-		return getSensorInfo(criteria, sort, DEFAULT_BATCH_SIZE);
+		return getSensorInfo(criteria, sort, DEFAULT_RESULTS_SIZE);
 	}
 
 	@Override
@@ -98,7 +98,7 @@ public class M2MServerAccessor implements IM2MServerAccessor {
 		if (sort != null) {
 			result = result.queryParam("sort", sort);
 		}
-		result = result.queryParam("batch_size", maxResults + "");
+		result = result.queryParam("limit", maxResults + "");
 		return result;
 	}
 }

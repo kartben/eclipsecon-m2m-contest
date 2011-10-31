@@ -46,15 +46,16 @@ public class DataMonitorComponent {
 	protected void activate(ComponentContext cctx) {
 		Integer pollingInterval = (Integer) cctx.getProperties().get(
 				"pollingInterval");
-		if (pollingInterval == null)
-			pollingInterval = 10;
+		if (pollingInterval == null || pollingInterval < 5)
+			pollingInterval = 5;
 		// retrieve the list of sensors declared on the server
 		Info info = _serverAccessor.getSensorInfo(null, null, 50);
+		int ii = 0;
 		for (SensorInfo i : info.results) {
 			_monitoredValues.put(i.sensor, null);
-
 			Timer timer = new Timer();
-			timer.schedule(new DataMonitor(i.sensor), 0, pollingInterval * 1000);
+			timer.schedule(new DataMonitor(i.sensor), (ii++ * 1000),
+					pollingInterval * 1000);
 		}
 	}
 
@@ -72,23 +73,37 @@ public class DataMonitorComponent {
 		@SuppressWarnings("unchecked")
 		@Override
 		public void run() {
-			Data data = _serverAccessor.getSensorData("{\"sensor\":\""
-					+ _sensor + "\"}", "{\"_id\":-1}", 1);
+			Data data;
+			try {
+				data = _serverAccessor.getSensorData("{\"sensor\":\"" + _sensor
+						+ "\"}", "{\"_id\":-1}", 1);
+				if (data.results != null && data.results.size() > 0
+						&& data.results.get(0)._id != null) {
+					Date newestDate = data.results.get(0).getAcquisitionDate();
+					Float newestValue = data.results.get(0).value;
 
-			Date newestDate = data.results.get(0).getAcquisitionDate();
-			Float newestValue = data.results.get(0).value;
-
-			Date previousDate = _monitoredValues.get(_sensor);
-			if (previousDate == null || newestDate.after(previousDate)) {
-				_monitoredValues.put(_sensor, newestDate);
-				if (_eventAdmin != null) {
-					@SuppressWarnings("rawtypes")
-					Dictionary p = new Properties();
-					p.put(EventConstants.MESSAGE, newestValue);
-					p.put(EventConstants.TIMESTAMP, newestDate.getTime());
-					_eventAdmin.postEvent(new Event(
-							M2MContestConstants.BASE_TOPIC + _sensor, p));
+					Date previousDate = _monitoredValues.get(_sensor);
+					if (previousDate == null || newestDate.after(previousDate)) {
+						_monitoredValues.put(_sensor, newestDate);
+						if (_eventAdmin != null) {
+							@SuppressWarnings("rawtypes")
+							Dictionary p = new Properties();
+							p.put(EventConstants.MESSAGE, newestValue);
+							p.put(EventConstants.TIMESTAMP,
+									newestDate.getTime());
+							Event event = new Event(
+									M2MContestConstants.BASE_TOPIC + _sensor, p);
+							// System.out
+							// .println(event
+							// + " -- "
+							// + event.getProperty(EventConstants.MESSAGE));
+							_eventAdmin.postEvent(event);
+						}
+					}
 				}
+			} catch (Exception e) {
+				System.err.println("Server down?");
+				e.printStackTrace();
 			}
 		}
 	}
