@@ -1,69 +1,101 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <html>
-	<head>
-		<script type="text/javascript" src="https://www.google.com/jsapi"></script>
-		<script type="text/javascript">
-		google.load("visualization", "1", {
-			packages: ["corechart"]
-		});
-		google.load("jquery", "1");
-		
-		var baseURL = 'http://m2mcontest.eclipsecon.org/rest_api/sensors/consolidatedData_OneMinute' ;
+    <head>
+        <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+        <script type="text/javascript">
+        google.load("visualization", "1", {
+            packages: ["corechart"]
+        });
+        google.load("jquery", "1");
+        
+        var periods = new Array() ;
+        periods.push({collection: 'OneMinute', howMany: 15}) ;
+        periods.push({collection: 'OneMinute', howMany: 60}) ;
+        periods.push({collection: 'FiveMinute', howMany: 36}) ;
+        periods.push({collection: 'FiveMinute', howMany: 72}) ;
+        periods.push({collection: 'FiveMinute', howMany: 300}) ;
+        periods.push({collection: 'OneHour', howMany: 24}) ;
+        
+        function updateChart() {
+                var baseURL = 'http://m2mcontest.eclipsecon.org/rest_api/sensors/consolidatedData_' + periods[document.getElementById('timeSelect').value].collection ;
 
-		function updateChart() {
+                function fillDataTableWithResults(column) {
+                    return function(data) {
+                        if (data != null && data.results &&
+                            data.results.length > 0) {
+                                var rows = data.results;
+                                for (var i = 0; i < rows.length; i++) {
+                                    dataTable.setValue(rows.length - i - 1, 0, new Date(rows[i]._id.ts["$date"]));
+                                    dataTable.setValue(rows.length - i - 1, column, rows[i].value.average);
+                                }
+                            }
+                            
+                            var formatter = new google.visualization.DateFormat({pattern: 'HH:mm'});
+                            formatter.format(dataTable, 0);
+                                                        
+                            chart.draw(dataTable, {
+                                width: 450,
+                                height: 300,
+                                title: 'Sensors',
+								curveType: 'function',
+								vAxis: {logScale: false	}
+                            });
+                    };
+                }
+    
+                var howMany = periods[document.getElementById('timeSelect').value].howMany ;
+    
+                var dataTable = new google.visualization.DataTable();
+                dataTable.addColumn('datetime', 'Time');
+                dataTable.addColumn('number', 'Cube temp.');
+                dataTable.addColumn('number', 'Station #1 temp.');
+                dataTable.addColumn('number', 'Station #2 temp.');
+                dataTable.addColumn('number', 'Cube ill.');
+                dataTable.addColumn('number', 'Station #1 ill.');
+                dataTable.addColumn('number', 'Station #2 ill.');
+                dataTable.addRows(howMany);
+                var chart = new google.visualization.LineChart(document.getElementById('chart_div'));
+                    
+                var queryArgs = '?sort=%7B"_id":-1%7D&criteria=%7B"_id.sensorId"%3A"CUBE_TEMPERATURE"%7D&limit=' + howMany + '&callback=?' ;
+                var url = baseURL + queryArgs ;
+                $.getJSON(url, fillDataTableWithResults(1)) ;
 
-			    function fillDataTableWithResults(column) {
-					return function(data) {
-						if (data != null && data.results &&
-							data.results.length > 0) {
-								var rows = data.results;
-								for (var i = 0; i < rows.length; i++) {
-									dataTable.setValue(rows.length - i - 1, 0, new Date(rows[i]._id.ts["$date"]));
-									dataTable.setValue(rows.length - i - 1, column, rows[i].value.minimum);
-								}
-							}
-							
-							var formatter = new google.visualization.DateFormat({pattern: 'HH:mm'});
-							formatter.format(dataTable, 0);
-														
-							chart.draw(dataTable, {
-								width: 450,
-								height: 300,
-								title: 'Sensors'
-							});
-					};
-			    }
-	
-				var dataTable = new google.visualization.DataTable();
-				dataTable.addColumn('datetime', 'Time');
-				dataTable.addColumn('number', 'Cube temp.');
-				dataTable.addColumn('number', 'Station #1 temp.');
-				dataTable.addColumn('number', 'Station #2 temp.');
-				dataTable.addRows(60);
-				var chart = new google.visualization.LineChart(document.getElementById('chart_div'));
+                var queryArgs = '?sort=%7B"_id":-1%7D&criteria=%7B"_id.sensorId"%3A"STATION1_TEMPERATURE"%7D&limit=' + howMany + '&callback=?' ;
+                var url = baseURL + queryArgs ;
+                $.getJSON(url, fillDataTableWithResults(2)) ;
 
-	
-	
-				var queryArgs = '?sort=%7B"_id":-1%7D&criteria=%7B"_id.sensorId"%3A"CUBE_TEMPERATURE"%7D&batch_size=60&callback=?' ;
-				var url = baseURL + queryArgs ;
-				$.getJSON(url, fillDataTableWithResults(1)) ;
+                var queryArgs = '?sort=%7B"_id":-1%7D&criteria=%7B"_id.sensorId"%3A"STATION2_TEMPERATURE"%7D&limit=' + howMany + '&callback=?' ;
+                var url = baseURL + queryArgs ;
+                $.getJSON(url, fillDataTableWithResults(3)) ;
 
-				var queryArgs = '?sort=%7B"_id":-1%7D&criteria=%7B"_id.sensorId"%3A"STATION1_TEMPERATURE"%7D&batch_size=60&callback=?' ;
-				var url = baseURL + queryArgs ;
-				$.getJSON(url, fillDataTableWithResults(2)) ;
+                var queryArgs = '?sort=%7B"_id":-1%7D&criteria=%7B"_id.sensorId"%3A"CUBE_ILLUMINANCE"%7D&limit=' + howMany + '&callback=?' ;
+                var url = baseURL + queryArgs ;
+      //          $.getJSON(url, fillDataTableWithResults(4)) ;
 
-				var queryArgs = '?sort=%7B"_id":-1%7D&criteria=%7B"_id.sensorId"%3A"STATION2_TEMPERATURE"%7D&batch_size=60&callback=?' ;
-				var url = baseURL + queryArgs ;
-				$.getJSON(url, fillDataTableWithResults(3)) ;
+                var queryArgs = '?sort=%7B"_id":-1%7D&criteria=%7B"_id.sensorId"%3A"STATION1_ILLUMINANCE"%7D&limit=' + howMany + '&callback=?' ;
+                var url = baseURL + queryArgs ;
+     //           $.getJSON(url, fillDataTableWithResults(5)) ;
 
-		}
-		google.setOnLoadCallback(updateChart);
-		setInterval(updateChart, 10000);
-		</script>
-		<title></title>
-	</head>
-	<body>
-		<div id='chart_div' style='width: 500px; height: 200px;'></div>
-		<div id="content"></div>
-	</body>
+                var queryArgs = '?sort=%7B"_id":-1%7D&criteria=%7B"_id.sensorId"%3A"STATION2_ILLUMINANCE"%7D&limit=' + howMany + '&callback=?' ;
+                var url = baseURL + queryArgs ;
+     //           $.getJSON(url, fillDataTableWithResults(6)) ;
+
+        }
+        google.setOnLoadCallback(updateChart);
+        setInterval(updateChart, 10000);
+        </script>
+        <title></title>
+    </head>
+    <body>
+        <select id="timeSelect" onChange="updateChart();">
+            <option value="0">15 minutes (1 min resolution)</option>
+            <option value="1">1 hours (1 min resolution)</option>
+            <option value="2">3 hours (5 min resolution)</option>
+            <option value="3">6 hours (5 min resolution)</option>
+            <option value="4">24 hours (5 min resolution)</option>
+            <option value="5">24 hours (1 hour resolution)</option>
+        </select>
+        <div id='chart_div' style='width: 500px; height: 200px;'></div>
+        <div id="content"></div>
+    </body>
 </html>
