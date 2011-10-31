@@ -50,15 +50,15 @@
 				dataTable.addRows(howMany);
 				var chart = new google.visualization.LineChart(document.getElementById('chart_div'));
 					
-				var queryArgs = '?sort=%7B"_id":-1%7D&criteria=%7B"_id.sensorId"%3A"CUBE_TEMPERATURE"%7D&batch_size=' + howMany + '&callback=?' ;
+				var queryArgs = '?sort=%7B"_id":-1%7D&criteria=%7B"_id.sensorId"%3A"CUBE_TEMPERATURE"%7D&limit=' + howMany + '&callback=?' ;
 				var url = baseURL + queryArgs ;
 				$.getJSON(url, fillDataTableWithResults(1)) ;
 
-				var queryArgs = '?sort=%7B"_id":-1%7D&criteria=%7B"_id.sensorId"%3A"STATION1_TEMPERATURE"%7D&batch_size=' + howMany + '&callback=?' ;
+				var queryArgs = '?sort=%7B"_id":-1%7D&criteria=%7B"_id.sensorId"%3A"STATION1_TEMPERATURE"%7D&limit=' + howMany + '&callback=?' ;
 				var url = baseURL + queryArgs ;
 				$.getJSON(url, fillDataTableWithResults(2)) ;
 
-				var queryArgs = '?sort=%7B"_id":-1%7D&criteria=%7B"_id.sensorId"%3A"STATION2_TEMPERATURE"%7D&batch_size=' + howMany + '&callback=?' ;
+				var queryArgs = '?sort=%7B"_id":-1%7D&criteria=%7B"_id.sensorId"%3A"STATION2_TEMPERATURE"%7D&limit=' + howMany + '&callback=?' ;
 				var url = baseURL + queryArgs ;
 				$.getJSON(url, fillDataTableWithResults(3)) ;
 
