@@ -11,6 +11,7 @@ package org.eclipsecon.m2mcontest.connector.resources.info;
 
 public class SensorInfo {
 	public String sensor;
+	public String type;
 	public String description;
 	public String unit;
 }
