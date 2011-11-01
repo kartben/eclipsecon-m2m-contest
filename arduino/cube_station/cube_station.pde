@@ -119,13 +119,13 @@ byte mac[] = {
   0x90, 0xA2, 0xDA, 0x00, 0x44, 0x86};
 // assign an IP address for the controller:
 byte ip[] = { 
-  10,41,51,129 };
+  192,168,31,210 };
 
 byte gateway[] = { 
-  10,41,51,254 };
+  192,168,16,1 };
 
 byte mask[] = { 
-  255,255,255,0 };
+  255,255,240,0 };
 
 
 //  The address of the server you want to connect to (MongoDB REST API):
@@ -179,7 +179,7 @@ void setup()
   Serial.println("... Initializing GSM stack ...") ;
   Serial.println() ;
   lcdSerial.print("GSM.") ; 
-  if (gsm.begin()) {
+  if (gsm.begin("3456")) {
     Serial.println("\n... GSM ... READY!");
     lcdSerial.print(" OK!") ; 
   }
