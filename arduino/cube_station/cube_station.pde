@@ -207,8 +207,8 @@ void setup()
 
 void loop(){
   while (client.available() > 0) {
-    char c = client.read();
-    Serial.print(c);
+    client.read();
+//    Serial.print(c);
   }
 
   if (!client.connected() && lastConnected) {
