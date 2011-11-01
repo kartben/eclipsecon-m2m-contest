@@ -77,6 +77,17 @@ public class Main {
 				System.exit(0);
 			}
 
+			if (argsList.contains("-resetRFIDInfo")) {
+				DBCollection infoCollection = m.getDB("rfid").getCollection(
+						"info");
+
+				System.out.println("Resetting rfid/info collection");
+				resetRFIDInfoCollection(infoCollection);
+				System.out.println("... done");
+
+				System.exit(0);
+			}
+
 			// schedule data consolidation jobs
 			int delay = 0;
 			for (final Entry<String, Integer> entry : consolidationJobs
@@ -123,6 +134,47 @@ public class Main {
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
+	}
+
+	private static void resetRFIDInfoCollection(DBCollection infoCollection) {
+		infoCollection.drop();
+
+		infoCollection
+				.insert(new RFIDInfo(
+						"",
+						"CD",
+						"Legend - The Best of Bob Marley and the Wailers",
+						"http://ecx.images-amazon.com/images/I/51Q6MoBtPQL._SS500_.jpg",
+						"042284621021"));
+
+		infoCollection
+				.insert(new RFIDInfo(
+						"",
+						"CD",
+						"Live Vol. 2 Atlanta 1983 - The Police",
+						"http://ecx.images-amazon.com/images/I/519WWC736sL._SS500_.jpg",
+						"2024193103926"));
+
+		infoCollection
+				.insert(new RFIDInfo(
+						"",
+						"CD",
+						"The Guitar Trio - Paco de Lucia / Al Di Meola / John McLaughlin",
+						"http://g-ecx.images-amazon.com/images/G/01/ciu/32/fb/44c6729fd7a0a31dda75d010.L.jpg",
+						"731453321526"));
+
+		infoCollection.insert(new RFIDInfo("", "Wii Game",
+				"Rayman contre les Lapins Crétins",
+				"http://ecx.images-amazon.com/images/I/51MoOCp87SL.jpg",
+				"3307210230157"));
+
+		infoCollection
+				.insert(new RFIDInfo(
+						"",
+						"Wii Game",
+						"Wii Sports",
+						"http://upload.wikimedia.org/wikipedia/en/thumb/e/e0/Wii_Sports_Europe.jpg/250px-Wii_Sports_Europe.jpg",
+						"045496362126"));
 	}
 
 	private static void resetInfoCollection(DBCollection infoCollection) {
