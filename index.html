@@ -339,10 +339,40 @@ hljs.initHighlightingOnLoad();
 					<code><strong>info</strong></code> collection contains the human-readable description of the physical objects that can be scanned.
 				</p>
 				<p>
+					The objects we brought for you to play with are Audio CDs and video games (and don't try stealing them, boxes are empty! ☺). So how about, for example, automatically starting to play the album you just scanned in iTunes?
+				</p>
+				<p>
 					Returned values have the following format:
 				</p>
 				<pre>
-<code>TBD.</code>        
+<code>
+{
+  "ok":1,
+  "results":[
+    {
+      "description":"Legend - The Best of Bob Marley and the Wailers",
+      "imageURL":"http://ecx.images-amazon.com/images/I/51Q6MoBtPQL._SS500_.jpg",
+      "barcode":"042284621021",
+      "_id":{
+        "$oid":"4eb06430da068e43423d616b"
+      },
+      "type":"CD",
+      "tag":"99878E2D"
+    },
+    {
+      "description":"Rayman contre les Lapins Cr\u00e9tins",
+      "imageURL":"http://ecx.images-amazon.com/images/I/51MoOCp87SL.jpg",
+      "barcode":"3307210230157",
+      "_id":{
+        "$oid":"4eb06430da068e43423d616e"
+      },
+      "type":"Wii Game",
+      "tag":"B73C5F60"
+    }
+  ],
+  "id":1560
+}   
+</code>        
 </pre>
 			</li>
 		</ul>
