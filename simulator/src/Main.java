@@ -141,7 +141,7 @@ public class Main {
 
 		infoCollection
 				.insert(new RFIDInfo(
-						"",
+						"99878E2D",
 						"CD",
 						"Legend - The Best of Bob Marley and the Wailers",
 						"http://ecx.images-amazon.com/images/I/51Q6MoBtPQL._SS500_.jpg",
@@ -149,7 +149,7 @@ public class Main {
 
 		infoCollection
 				.insert(new RFIDInfo(
-						"",
+						"99878ED",
 						"CD",
 						"Live Vol. 2 Atlanta 1983 - The Police",
 						"http://ecx.images-amazon.com/images/I/519WWC736sL._SS500_.jpg",
@@ -157,20 +157,20 @@ public class Main {
 
 		infoCollection
 				.insert(new RFIDInfo(
-						"",
+						"99871BD",
 						"CD",
 						"The Guitar Trio - Paco de Lucia / Al Di Meola / John McLaughlin",
 						"http://g-ecx.images-amazon.com/images/G/01/ciu/32/fb/44c6729fd7a0a31dda75d010.L.jpg",
 						"731453321526"));
 
-		infoCollection.insert(new RFIDInfo("", "Wii Game",
+		infoCollection.insert(new RFIDInfo("B74034A0", "Wii Game",
 				"Rayman contre les Lapins Crétins",
 				"http://ecx.images-amazon.com/images/I/51MoOCp87SL.jpg",
 				"3307210230157"));
 
 		infoCollection
 				.insert(new RFIDInfo(
-						"",
+						"B73C5F60",
 						"Wii Game",
 						"Wii Sports",
 						"http://upload.wikimedia.org/wikipedia/en/thumb/e/e0/Wii_Sports_Europe.jpg/250px-Wii_Sports_Europe.jpg",
