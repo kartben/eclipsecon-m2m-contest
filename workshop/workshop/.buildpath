@@ -2,4 +2,5 @@
 <buildpath>
 	<buildpathentry kind="src" path="src-lua"/>
 	<buildpathentry combineaccessrules="false" kind="prj" path="/xbeedriver"/>
+	<buildpathentry combineaccessrules="false" kind="prj" path="/mqtt_lua"/>
 </buildpath>
