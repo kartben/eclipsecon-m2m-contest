@@ -62,6 +62,7 @@ void sendValues(int illuminance, int temperature) {
 
       // get the delivery status, the fifth byte
       if (txStatus.getDeliveryStatus() == SUCCESS) {
+          flashLed(13, 4, 100) ;
       } 
       else {
         // the remote XBee did not receive our packet. is it powered on?
