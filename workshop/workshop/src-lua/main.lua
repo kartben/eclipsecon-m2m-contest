@@ -4,19 +4,24 @@ local serial = require "serial"
 local log = require "log"
 local packetreader = require "packetreader"
 local frameparser = require "frameparser"
-local MQTT = require("mqtt_library")
+local MQTT = require "mqtt_library"
+local http = require "socket.http"
+local ltn12 = require "ltn12"
 
 local serialdev
 
 local station1address = "0x0013A200407A629F"
 local station2address = "0x0013A200407A63BE"
 
-local station1id = "Station1"
-local station2id = "Station2"
+local address2feedID = {}
+address2feedID[station1address]= {}
+address2feedID[station1address].temperature = 9038
+address2feedID[station1address].illuminance = 9040
 
-local address2assetID = {}
-address2assetID[station1address]=station1id
-address2assetID[station2address]=station2id
+address2feedID[station2address]= {}
+address2feedID[station2address].temperature = 9039
+address2feedID[station2address].illuminance = 9041
+
 
 local address2assets = {}
 
@@ -81,9 +86,17 @@ local function main ()
 					--publish data on the MQTT broker
 					mqtt_client:handler()
 					mqtt_client:publish("eclipsecon/station/" .. frame.address64, illuminance .. '#'.. temperature)
-					
+
 					--publish data on OpenSense
-					
+					local req_body = '[{"feed_id": ' .. address2feedID[frame.address64].temperature .. ', "value": '.. temperature .. '}, {"feed_id": ' 
+												.. address2feedID[frame.address64].illuminance .. ', "value": '.. illuminance .. '}]'
+					http.request { url = 'http://api.sen.se/events/?sense_key=o3QW3IvDOaR7mJaOga8NTw' ,
+						source = ltn12.source.string(req_body) ,
+						method = "POST",
+						headers = { ["Content-Type"] = "application/json",
+									["Content-Length"] = #req_body }
+					}
+
 				end
 			end
 		end
